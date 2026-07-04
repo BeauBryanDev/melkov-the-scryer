@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEGIS // MAGIC MIRROR v3 - HANDS OF LIGHT</title>
+<link rel="icon" type="image/svg+xml" href="assets/scryer_icon.svg">
+<link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+<canvas id="glcanvas"></canvas>
+<video id="video" playsinline muted></video>
+
+<div class="hud corner-b"></div>
+<div class="top-tag">MAGIC MIRROR // IT SEES YOUR SOUL</div>
+
+<div class="panel">
+  <h1>SOUL TELEMETRY</h1>
+  <div class="row"><span class="label">ANGER</span><span class="bar" id="bar-anger"><i></i></span></div>
+  <div class="row"><span class="label">SADNESS</span><span class="bar" id="bar-sadness"><i></i></span></div>
+  <div class="row"><span class="label">SURPRISE</span><span class="bar" id="bar-surprise"><i></i></span></div>
+  <div class="row"><span class="label">JOY</span><span class="bar" id="bar-joy"><i></i></span></div>
+  <div class="row"><span class="label">ENTROPY</span><span class="bar" id="bar-entropy"><i></i></span></div>
+  <div class="row state-line"><span class="label">STATE</span><span id="state">SCANNING</span></div>
+  <div class="row"><span class="label">GAZE</span><span id="gaze">0.00 / 0.00</span></div>
+  <div class="row"><span class="label">HANDS</span><span id="hands">NONE</span></div>
+</div>
+
+<div id="start-overlay">
+  <h2>MAGIC MIRROR v3</h2>
+  <p>The mirror opened its eye, and now it feels your hands. Trace light with your fingertips: it burns as fire when you are angry, falls as snow when you are sad, shines as pure light otherwise. Pinch to grab the fractal and drag it. Push an open palm toward the mirror and the eye will retreat. Spread both hands apart to open the portal. Everything runs in your browser; nothing is sent anywhere.</p>
+  <button id="start-btn">WAKE THE EYE</button>
+  <div id="status"></div>
+</div>
+
+<!-- MediaPipe CDN globals (FaceMesh, Hands, Camera).
+     These are CLASSIC scripts (no `type`, no `async`/`defer`), so they run
+     during parsing and finish BEFORE the deferred ES module below. That is
+     what guarantees the globals exist when logic/app.js runs.
+     Do NOT add async/defer here or move them after the module. -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<!-- Neural emotion net: onnxruntime-web + the emotion loop. Both are CLASSIC
+     scripts, so they execute during parsing (before the deferred modules).
+     emotions.js only touches window.Scryer after the model finishes loading
+     asynchronously, by which point app.js (below) has defined the bridge. -->
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+<script src="logic/emotions.js"></script>
+
+<!-- App entry. type="module" is deferred by spec, so it runs after the
+     classic MediaPipe scripts above. -->
+<script type="module" src="logic/app.js"></script>
+<script type="module" src="logic/voice.js"></script>
+</body>
+</html>
