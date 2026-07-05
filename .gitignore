@@ -19,10 +19,14 @@ __pycache__/
 node_modules/
 dist/
 
-# ── Model binaries (models/) ──
-# Large ONNX weights (Piper voices + emotion net). Not committed;
-# download links are documented in README.md.
-models/*.onnx
+# ── Model binaries ──
+# Large ONNX weights (Piper voices + emotion net) live in BOTH the repo-root
+# models/ and frontend/public/models/ (the latter is served to the browser).
+# Never commit them anywhere — download links are documented in README.md.
+# Un-anchored so it matches at any depth (the old `models/*.onnx` only caught
+# the repo-root copy and let frontend/public/models/*.onnx slip in).
+*.onnx
+*.onnx.json
 
 # ── Logs ──
 *.log

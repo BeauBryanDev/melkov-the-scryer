@@ -1,0 +1,204 @@
+/* ============================================================
+   AEGIS SCRYER - TEMPLE THEME
+   Monochrome discipline: black void + cyan light. The only page
+   allowed to break this palette is the Kaleidoscope, inside its
+   own canvas. UI chrome is ALWAYS monochrome.
+   ============================================================ */
+
+:root {
+  /* Palette: the whole temple derives from these six values */
+  --void: #030507;            /* page background */
+  --panel: rgba(5, 10, 14, 0.72);
+  --cyan: #35e0f2;            /* primary light */
+  --cyan-soft: #8ceef9;       /* highlights, active text */
+  --cyan-dim: #1a6b75;        /* borders, inactive */
+  --cyan-ghost: rgba(53, 224, 242, 0.12);
+
+  --font-mono: "Courier New", ui-monospace, monospace;
+
+  --nav-w: 224px;             /* desktop sidebar width */
+  --nav-h: 58px;              /* mobile bottom bar height */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--void);
+  color: var(--cyan-soft);
+  font-family: var(--font-mono);
+  overflow: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--cyan); color: var(--void); }
+
+/* Scrollbars in temple style (pages with scrollable content) */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); }
+
+/* ---------------- HUD corner frame ---------------- */
+
+.hud-frame {
+  position: fixed;
+  inset: 10px;
+  border: 1px solid var(--cyan-ghost);
+  pointer-events: none;
+  z-index: 50;
+}
+.hud-frame::before,
+.hud-frame::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--cyan);
+}
+.hud-frame::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.hud-frame::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+/* ---------------- Navigation ---------------- */
+
+#temple-nav {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  border-color: var(--cyan-dim);
+  letter-spacing: 2px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  color: var(--cyan);
+}
+.nav-brand img { filter: drop-shadow(0 0 6px var(--cyan-ghost)); }
+
+.nav-links { display: flex; }
+
+.nav-links a {
+  position: relative;
+  font-size: 11px;
+  color: var(--cyan-dim);
+  transition: color 140ms linear, text-shadow 140ms linear;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--cyan-soft); }
+.nav-links a.active {
+  color: var(--cyan);
+  text-shadow: 0 0 8px var(--cyan-ghost);
+}
+
+.nav-foot {
+  font-size: 10px;
+  color: var(--cyan-dim);
+  letter-spacing: 3px;
+}
+
+/* Desktop: left sidebar */
+@media (min-width: 768px) {
+  #temple-nav {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--nav-w);
+    flex-direction: column;
+    padding: 26px 0;
+    border-right: 1px solid var(--cyan-dim);
+  }
+  .nav-brand { padding: 0 22px 26px; }
+  .nav-links { flex-direction: column; flex: 1; }
+  .nav-links a { padding: 13px 22px; border-left: 2px solid transparent; }
+  .nav-links a.active { border-left-color: var(--cyan); background: var(--cyan-ghost); }
+  .nav-foot { padding: 0 22px; }
+
+  #page {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    left: var(--nav-w);
+  }
+}
+
+/* Mobile: bottom bar, thumb-reachable */
+@media (max-width: 767px) {
+  #temple-nav {
+    left: 0; right: 0; bottom: 0;
+    height: var(--nav-h);
+    align-items: center;
+    border-top: 1px solid var(--cyan-dim);
+    padding: 0 10px;
+  }
+  .nav-brand span { display: none; }        /* icon only, save width */
+  .nav-links {
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { padding: 10px 12px; font-size: 10px; }
+  .nav-links a.active { border-bottom: 2px solid var(--cyan); }
+  .nav-foot { display: none; }
+
+  #page {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    bottom: var(--nav-h);
+  }
+}
+
+/* ---------------- Page container ---------------- */
+
+#page {
+  overflow: hidden;      /* pages own their scroll if they need one */
+  outline: none;
+}
+
+/* Shared page primitives (used by Home and simple pages) */
+
+.page-scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding: 48px clamp(20px, 6vw, 80px);
+}
+
+.temple-title {
+  font-size: clamp(22px, 4vw, 38px);
+  letter-spacing: 8px;
+  color: var(--cyan);
+  text-shadow: 0 0 18px var(--cyan-ghost);
+  margin-bottom: 18px;
+}
+
+.temple-panel {
+  border: 1px solid var(--cyan-dim);
+  background: var(--panel);
+  padding: 22px;
+  margin-bottom: 22px;
+}
+
+.temple-btn {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  background: transparent;
+  border: 1px solid var(--cyan);
+  padding: 12px 26px;
+  cursor: pointer;
+  transition: background 140ms linear, color 140ms linear;
+}
+.temple-btn:hover { background: var(--cyan); color: var(--void); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

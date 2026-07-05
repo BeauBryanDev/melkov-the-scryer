@@ -24,7 +24,7 @@
 
 const EMO = {
   MODEL_URL: "models/emotieff_b0.onnx",
-  SIZE: 112,                 // EmotiEffLib B0 input: 112x112 RGB aligned face
+  SIZE: 224,                 // EmotiEffLib B0 input: 224x224 RGB aligned face
   INTERVAL_MS: 400,          // ~2.5 Hz: emotions do not change at 60 fps
   CROP_MARGIN: 0.25,         // expand FaceMesh bbox: the model saw full faces
   // ImageNet normalization (EmotiEffLib standard)
@@ -90,7 +90,7 @@ async function loadModel() {
 }
 
 function preprocess(video, box) {
-  // Expand and clamp the FaceMesh bbox, then draw the crop at 112x112
+ 
   const mx = box.w * EMO.CROP_MARGIN;
   const my = box.h * EMO.CROP_MARGIN;
   const sx = Math.max(0, box.x - mx);

@@ -11,16 +11,20 @@
    ============================================================ */
 
 import { state } from "./state.js";
-import { canvas } from "./renderer.js";
 
 const TIP_IDX = [4, 8, 12, 16, 20];
 const prevTips = new Array(10).fill(null);
 let pinchPrev = [null, null];
 let tipDecayTimer = 0;
 
-// Video-normalized -> scene space, horizontally mirrored like a real mirror
+// Video-normalized -> scene space, horizontally mirrored like a real mirror.
+// The scene fills the viewport, so the GL canvas aspect (width/height, both
+// = inner*dpr*scale) reduces to the window aspect — no need to reach into the
+// page's renderer for the canvas (which would invert core->page layering and,
+// at import time, boot a stray GL context). Recomputed per call so it tracks
+// window resizes for free.
 function toScene(lm) {
-  const aspect = canvas.width / canvas.height;
+  const aspect = window.innerWidth / window.innerHeight;
   return { x: (0.5 - lm.x) * aspect, y: 0.5 - lm.y };
 }
 

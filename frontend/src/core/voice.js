@@ -56,7 +56,7 @@ function setLanguage(lang) {
  
 /* Boot  */
  
-async function boot() {
+export async function bootVoice() {
   buildUI();
   setStatus("SUMMONING VOICE...");
  
@@ -438,5 +438,6 @@ function showSubtitle(text) {
   showSubtitle._t = setTimeout(() => { el.textContent = ""; }, 14000);
 }
 
-boot();
+// No self-run: bootVoice() is now a permanent core service, started once
+// from main.js. Its UI (built on document.body) persists across page routes.
  
