@@ -26,7 +26,59 @@ let audioCtx = null;
  
 let ttsReady = false;
 
+const micViz = { anim: 0, analyser: null, stream: null, ownsStream: false };
+
+async function startMicViz(stream = null) {
+  stopMicViz();
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === "suspended") await audioCtx.resume();
+
+  if (stream) {
+    micViz.stream = stream;
+    micViz.ownsStream = false;
+  } else {
+    micViz.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    micViz.ownsStream = true;
+  }
+
+  const src = audioCtx.createMediaStreamSource(micViz.stream);
+  micViz.analyser = audioCtx.createAnalyser();
+  micViz.analyser.fftSize = 1024;
+  micViz.analyser.smoothingTimeConstant = 0.78;
+  src.connect(micViz.analyser);
+
+  const timeBuf = new Uint8Array(micViz.analyser.fftSize);
+  const freqBuf = new Uint8Array(micViz.analyser.frequencyBinCount);
+  audioViz?.setSource?.("mic");
+
+  const tick = () => {
+    if (!micViz.analyser) return;
+    micViz.analyser.getByteTimeDomainData(timeBuf);
+    micViz.analyser.getByteFrequencyData(freqBuf);
+    audioViz?.push?.({ time: timeBuf, freq: freqBuf, source: "mic" });
+    micViz.anim = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+function stopMicViz() {
+  cancelAnimationFrame(micViz.anim);
+  micViz.anim = 0;
+  micViz.analyser = null;
+  if (micViz.ownsStream) micViz.stream?.getTracks?.().forEach(t => t.stop());
+  micViz.stream = null;
+  micViz.ownsStream = false;
+  audioViz?.setSource?.(null);
+}
+
 const ui = { button: null, status: null, langBtn: null };
+
+/** Eye-page audio chart; fed mic + TTS analyser frames while mounted. */
+let audioViz = null;
+
+export function attachAudioVisualizer(el) {
+  audioViz = el;
+}
 
 const LANGS = {
   en: { webspeech: "en-US", whisper: "english", label: "EN" },
@@ -41,6 +93,7 @@ const LANGS = {
 // const LANGS = {
 //   en: { webspeech: "en-US", whisper: "english", label: "EN" },
 //   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" },   // Spain
+//   fr: { webspeech: "fr-FR", whisper: "french",  label: "FR" },
 // };
 let currentLang = CONFIG.DEFAULT_LANG;
 
@@ -92,6 +145,8 @@ function sanitizeTelemetry(t) {
     joy: num01(t.joy),
     fear: num01(t.fear),
     entropy: num01(t.entropy),
+    symmetry: num01(t.symmetry),
+    golden_ratio: num01(t.golden_ratio),
     dominant_state: typeof t.dominant_state === "string" ? t.dominant_state : "neutral",
     gaze_behavior: GAZE_VALUES.has(t.gaze_behavior) ? t.gaze_behavior : "steady",
     eye_contact: num01(t.eye_contact),
@@ -168,8 +223,20 @@ async function consult(userText) {
    encoded audio (OpenAI TTS). We decode it via Web Audio and play it
    through an analyser so the eye still pulses to the voice. */
 
+// Must stay <= SpeakRequest.max_length in app/schemas/tts.py, or /speak 422s
+// and the voice goes silent. Guard here so an over-long reply still speaks
+// (trimmed to the last sentence that fits) instead of failing outright.
+const TTS_MAX_CHARS = 999;   // must match SpeakRequest.max_length in app/schemas/tts.py
+
+function fitForSpeech(text) {
+  if (text.length <= TTS_MAX_CHARS) return text;
+  const head = text.slice(0, TTS_MAX_CHARS);
+  const lastStop = Math.max(head.lastIndexOf(". "), head.lastIndexOf("! "), head.lastIndexOf("? "));
+  return lastStop > TTS_MAX_CHARS * 0.5 ? head.slice(0, lastStop + 1) : head;
+}
+
 async function speakStreaming(text) {
-  const clean = (text || "").trim();
+  const clean = fitForSpeech((text || "").trim());
   if (!clean) return;
 
   const t0 = performance.now();
@@ -215,8 +282,10 @@ function playBuffer(buffer) {
   source.buffer = buffer;
 
   const analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 256;
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0.78;
   const bins = new Uint8Array(analyser.frequencyBinCount);
+  const timeBins = new Uint8Array(analyser.fftSize);
 
   // Graph: source -> analyser (measurement tap, tracks the dry voice)
   //        source -> dry gain -> destination
@@ -241,13 +310,20 @@ function playBuffer(buffer) {
     function pulse() {
       if (!alive) return;
       analyser.getByteFrequencyData(bins);
+      analyser.getByteTimeDomainData(timeBins);
       let sum = 0;
       for (let i = 0; i < bins.length; i++) sum += bins[i];
       window.Scryer?.setSpeaking?.(Math.min(1, (sum / bins.length / 128) * 1.6));
+      audioViz?.setSource?.("tts");
+      audioViz?.push?.({ time: timeBins, freq: bins, source: "tts" });
       requestAnimationFrame(pulse);
     }
- 
-    source.onended = () => { alive = false; resolve(); };
+
+    source.onended = () => {
+      alive = false;
+      audioViz?.setSource?.(null);
+      resolve();
+    };
     source.start();
     pulse();
   });
@@ -332,7 +408,7 @@ async function blobToMono16k(blob) {
   return rendered.getChannelData(0);
 }
  
-/* ---------------- Push-to-talk ---------------- */
+/* Push-to-talk  */
  
 function bindPushToTalk() {
   let holding = false;
@@ -343,12 +419,18 @@ function bindPushToTalk() {
     ui.button.classList.add("listening");
     setStatus("LISTENING...");
     await sttEngine.start();
+    try {
+      await startMicViz(sttEngine.stream || null);
+    } catch (err) {
+      console.warn("[SCRYER] mic viz unavailable:", err);
+    }
   };
- 
+
   const release = async () => {
     if (!holding) return;
     holding = false;
     ui.button.classList.remove("listening");
+    stopMicViz();
     const text = await sttEngine.stop();
     console.log("[SCRYER] transcript:", JSON.stringify(text));
     
@@ -367,7 +449,7 @@ function bindPushToTalk() {
   ui.button.addEventListener("pointerleave", release);
 }
  
-/* ---------------- UI ---------------- */
+/* UI  */
  
 function buildUI() {
   const wrap = document.createElement("div");

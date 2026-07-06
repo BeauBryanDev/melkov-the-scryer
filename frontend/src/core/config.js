@@ -80,12 +80,10 @@ export const CONFIG = {
   },
 
   GAME_OF_LIFE: {
-    GRID: 256,
+    // Pure Conway. Lower GRID = bigger cells. No longer needs to be a power of
+    // two: the sim texture uses CLAMP_TO_EDGE wrap (toroidal edges are handled
+    // in-shader via fract), so any size renders correctly.
+    GRID: 100,
     TICKS_PER_S: 11,
-    DECAY_BASE: 0.008,       // fraction of live cells killed per tick
-    DECAY_ENTROPY_GAIN: 1.6, // facial entropy multiplies decay pressure
-    SEED_BUDGET: 120,
-    TIME_LIMIT_S: 90,
-    POPULATION_FLOOR: 0.02,  // lose if alive fraction drops below this
   },
 };

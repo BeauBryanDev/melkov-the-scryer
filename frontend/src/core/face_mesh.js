@@ -100,10 +100,15 @@ export function analyze(lm) {
     if (++calib.n >= CALIB_FRAMES) {
       calib.brow /= calib.n; calib.smile /= calib.n; calib.eye /= calib.n;
       calib.ready = true;
-      document.getElementById("state").textContent = "THE EYE IS OPEN";
+      const stateLabel = document.getElementById("state");
+      if (stateLabel) {
+        stateLabel.textContent = "THE EYE IS OPEN";
+      }
     }
     return;
   }
+
+  state.landmarks = lm;
 
   const dBrow  = brow    - calib.brow;
   const dSmile = smile   - calib.smile;
@@ -115,6 +120,9 @@ export function analyze(lm) {
   const sadness  = clamp01(-dSmile * 26 - 0.10) * clamp01(1.0 - anger * 0.7) * clamp01(1.0 - mouthOpen * 6);
 
   state.raw = { anger, sadness, surprise, joy };
+
+  // Cache the current face landmarks for the mirror page and downstream analysis.
+  state.landmarks = lm;
 
   // The mirror blinks with you: eye aperture relative to your neutral
   state.blink = clamp01(eyeOpen / calib.eye);

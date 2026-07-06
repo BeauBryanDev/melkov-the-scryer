@@ -14,6 +14,7 @@ export const state = {
   emotionalEntropy: 0,       // Shannon entropy of the CNN distribution, 0..1
   eyeContact: 0.5,           // 0 = always avoiding, 1 = locked on the eye
   faceBox: null,             // { x, y, w, h } in VIDEO pixel coords, or null
+  landmarks: null,           // Most recent face mesh landmarks array, or null
   gaze:   { x: 0, y: 0 },
   gazeSm: { x: 0, y: 0 },
   roll: 0, rollSm: 0,
@@ -22,6 +23,7 @@ export const state = {
   blink: 1, blinkSm: 1,
   fear: 0, fearSm: 0,        // neural fear -> the eye widens
   entropy: 0, entropySm: 0,
+  symmetry: 0, goldenRatio: 0,   // mirror page geometry; 0 when not measured
   // v3 hands
   tips: new Float32Array(40),        // 10 x vec4 (x, y, intensity, active)
   grab: { x: 0, y: 0 },

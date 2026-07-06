@@ -52,6 +52,8 @@ export function installScryerBridge() {
         anger: s.anger, sadness: s.sadness, surprise: s.surprise, joy: s.joy,
         entropy: state.entropySm,
         dominant_state: dominant,
+        symmetry: state.symmetry ?? 0,
+        golden_ratio: state.goldenRatio ?? 0,
         gaze_behavior: g < 0.25 ? "steady" : g < 0.6 ? "wandering" : "avoiding",
         face_present: state.faceSm > 0.5,
         fear: state.cnn?.fear ?? 0,
