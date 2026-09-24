@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str
     openai_model: str = "gpt-4o-mini"
-    openai_max_tokens: int = 160          # the oracle speaks briefly; TTS punishes verbosity
+    openai_max_tokens: int = 120          # the oracle speaks briefly; TTS punishes verbosity
     openai_temperature: float = 0.8       # high: poetic variance is the point
 
     # Text-to-speech: local Piper (piper-tts), CPU-only, no per-request cost.

@@ -18,6 +18,8 @@ class Telemetry(BaseModel):
     joy: float = Field(0.0, ge=0.0, le=1.0)
     fear: float = Field(0.0, ge=0.0, le=1.0)          # neural emotion net
     entropy: float = Field(0.0, ge=0.0, le=1.0)
+    symmetry: float = Field(0.0, ge=0.0, le=1.0)
+    golden_ratio: float = Field(0.0, ge=0.0, le=1.0)
     dominant_state: str = "neutral"
     gaze_behavior: Literal["steady", "wandering", "avoiding"] = "steady"
     face_present: bool = True
