@@ -16,12 +16,14 @@
    they render.
    ============================================================ */
 
+import { syncGate } from "./core/permissions.js";
+
 const routes = {
   "/home":         () => import("./pages/home/index.js"),
   "/eye":          () => import("./pages/eye/index.js"),
   "/kaleidoscope": () => import("./pages/kaleidoscope/index.js"),
   "/mirror":       () => import("./pages/mirror/index.js"),
-  "/graph":        () => import("./pages/graph/index.js"),
+  "/chaseme":      () => import("./pages/chaseme/index.js"),
   "/life":         () => import("./pages/life/index.js"),
 };
 
@@ -45,6 +47,7 @@ async function navigate() {
   const token = ++navToken;
   const path = currentPath();
   const container = document.getElementById("page");
+  syncGate(path);   // camera prompt only outside /home
 
   // Unmount the outgoing page BEFORE loading the incoming one:
   // GL contexts, FBOs and rAF loops must be released first.

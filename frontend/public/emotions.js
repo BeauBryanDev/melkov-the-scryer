@@ -23,7 +23,7 @@
 (function () {
 
 const EMO = {
-  MODEL_URL: "models/emotieff_b0.onnx",
+  MODEL_URL: "/models/emotieff_b0.onnx",
   SIZE: 224,                 // EmotiEffLib B0 input: 224x224 RGB aligned face
   INTERVAL_MS: 400,          // ~2.5 Hz: emotions do not change at 60 fps
   CROP_MARGIN: 0.25,         // expand FaceMesh bbox: the model saw full faces

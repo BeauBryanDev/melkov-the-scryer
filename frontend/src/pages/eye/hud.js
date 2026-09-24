@@ -44,7 +44,11 @@ export function buildHUD(container) {
     <div class="row"><span class="label">HANDS</span><span id="hands">NONE</span></div>
   `;
 
-  container.append(hud, tag, panel);
+  const audioPanel = document.createElement("div");
+  audioPanel.className = "audio-panel";
+  audioPanel.innerHTML = `<scryer-audio-chart></scryer-audio-chart>`;
+
+  container.append(hud, tag, panel, audioPanel);
 
   el = {
     bars: {
@@ -57,7 +61,12 @@ export function buildHUD(container) {
     state:   panel.querySelector("#state"),
     gaze:    panel.querySelector("#gaze"),
     hands:   panel.querySelector("#hands"),
+    audioChart: audioPanel.querySelector("scryer-audio-chart"),
   };
+}
+
+export function getAudioChart() {
+  return el?.audioChart ?? null;
 }
 
 export function updateHUD() {

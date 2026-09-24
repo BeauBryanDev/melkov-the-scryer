@@ -15,16 +15,16 @@
 
   <nav id="temple-nav" aria-label="Temple navigation">
     <a class="nav-brand" href="#/home">
-      <img src="/Scryer_Eye_Orb.webp" alt="" width="34" height="34">
+      <img src="/Scryer_Eye_Orb.webp" alt="" width="52" height="52">
       <span>SCRYER</span>
     </a>
     <div class="nav-links">
-      <a href="#/home"         data-route="/home">HOME</a>
-      <a href="#/eye"          data-route="/eye">THE EYE</a>
-      <a href="#/kaleidoscope" data-route="/kaleidoscope">KALEIDOSCOPE</a>
-      <a href="#/mirror"       data-route="/mirror">MIRROR</a>
-      <a href="#/graph"        data-route="/graph">GRAPH QUEST</a>
-      <a href="#/life"         data-route="/life">GAME OF LIFE</a>
+      <a href="#/home" data-route="/home"><span class="nav-ico" aria-hidden="true">◈</span><span class="nav-txt"><b>HOME</b><small>the threshold</small></span></a>
+      <a href="#/eye" data-route="/eye"><span class="nav-ico" aria-hidden="true">◉</span><span class="nav-txt"><b>ORB EYE</b><small>fractal oracle</small></span></a>
+      <a href="#/kaleidoscope" data-route="/kaleidoscope"><span class="nav-ico" aria-hidden="true">✦</span><span class="nav-txt"><b>KALEIDOSCOPE</b><small>soul light</small></span></a>
+      <a href="#/mirror" data-route="/mirror"><span class="nav-ico" aria-hidden="true">◇</span><span class="nav-txt"><b>MAGIC MIRROR</b><small>face constellation</small></span></a>
+      <a href="#/chaseme" data-route="/chaseme"><span class="nav-ico" aria-hidden="true">➤</span><span class="nav-txt"><b>CHASE ME</b><small>gaze pursuit</small></span></a>
+      <a href="#/life" data-route="/life"><span class="nav-ico" aria-hidden="true">▦</span><span class="nav-txt"><b>GAME OF LIFE</b><small>living cells</small></span></a>
     </div>
     <div class="nav-foot">
       <span id="nav-status">DORMANT</span>
@@ -48,7 +48,7 @@
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
   <!-- Pure IIFE (no ES imports): runs continuously and no-ops through
        window.Scryer?.* until the Eye page installs the bridge. -->
-  <script src="/src/core/emotions.js"></script>
+  <script src="/emotions.js"></script>
 
   <script type="module" src="/src/main.js"></script>
 </body>

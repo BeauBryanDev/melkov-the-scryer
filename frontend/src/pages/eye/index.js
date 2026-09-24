@@ -9,15 +9,16 @@
    Camera/perception is a permanent core service (main.js); this page
    only installs the window.Scryer bridge on mount and drives the loop.
 
-   The emotion net (core/emotions.js) is a permanent classic script
+   The emotion net (public/emotions.js) is a permanent classic script
    in the shell; it no-ops through window.Scryer?.* while this page
    is unmounted, and comes alive again when the bridge is reinstalled.
    ============================================================ */
 
 import { createRenderer } from "./renderer.js";
-import { buildHUD, updateHUD } from "./hud.js";
+import { buildHUD, updateHUD, getAudioChart } from "./hud.js";
 import { fuseAndSmooth } from "@/core/fusion.js";
-import { getVideo } from "@/core/camera.js";
+import { attachAudioVisualizer } from "@/core/voice.js";
+import "./scryer-audio-chart.js";
 import "./eye.css";
 
 export default {
@@ -29,25 +30,12 @@ export default {
     // #video lives on document.body (permanent perception service).
     container.innerHTML = `
       <canvas id="glcanvas"></canvas>
-      <div id="start-overlay">
-        <h2>MAGIC MIRROR</h2>
-        <p>The mirror opens its eye and feels your hands. Trace light with your
-           fingertips; pinch to grab the fractal and drag it; push an open palm
-           to make the eye retreat; spread both hands to open the portal.
-           Everything runs in your browser — nothing is sent anywhere.</p>
-        <button id="start-btn">WAKE THE EYE</button>
-        <div id="status"></div>
-      </div>
     `;
     buildHUD(container);
+    attachAudioVisualizer(getAudioChart());
 
     const canvas = container.querySelector("#glcanvas");
     this.renderer = createRenderer(canvas);   // GL context, programs, FBOs
-
-    // Perception may already be running from main.js — hide the wake overlay.
-    if (getVideo()?.srcObject) {
-      container.querySelector("#start-overlay").style.display = "none";
-    }
 
     const t0 = performance.now();
     let hudTick = 0;
@@ -67,5 +55,6 @@ export default {
 
     if (this.renderer) { this.renderer.dispose(); this.renderer = null; }
 
+    attachAudioVisualizer(null);
   },
 };

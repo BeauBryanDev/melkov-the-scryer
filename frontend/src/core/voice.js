@@ -1,7 +1,10 @@
 
+// Backend origin: set VITE_BACKEND_URL at build time for deploys (e.g. https://api.example.com).
+const BACKEND = (import.meta.env.VITE_BACKEND_URL || "http://localhost:8001").replace(/\/+$/, "");
+
 const CONFIG = {
-  BACKEND_URL: "http://localhost:8001/api/v1/oracle",
-  TTS_URL: "http://localhost:8001/api/v1/speak",   // server-side TTS (Piper)
+  BACKEND_URL: `${BACKEND}/api/v1/oracle`,
+  TTS_URL: `${BACKEND}/api/v1/speak`,   // server-side TTS (Piper)
 
   STT_ENGINE: "webspeech",      // "webspeech" | "whisper"
   WHISPER_MODEL: "onnx-community/whisper-base",
@@ -71,7 +74,7 @@ function stopMicViz() {
   audioViz?.setSource?.(null);
 }
 
-const ui = { button: null, status: null, langBtn: null };
+const ui = { button: null, status: null, langBtns: [] };
 
 /** Eye-page audio chart; fed mic + TTS analyser frames while mounted. */
 let audioViz = null;
@@ -103,7 +106,11 @@ function setLanguage(lang) {
   // Web Speech recognizer needs its language set live; Whisper reads
   // currentLang at transcribe time (see WhisperSTT.stop).
   if (sttEngine?.rec) sttEngine.rec.lang = LANGS[lang].webspeech;
-  if (ui.langBtn) ui.langBtn.textContent = "[ " + LANGS[lang].label + " ]";
+  ui.langBtns?.forEach(b => {
+    const on = b.dataset.lang === lang;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
   setStatus("LANGUAGE: " + LANGS[lang].label);
 }
  
@@ -343,6 +350,18 @@ class WebSpeechSTT {
     this.rec.continuous = true;
     this.rec.interimResults = false;
     this.transcript = "";
+    this.rec.onerror = e => {
+      console.error("[SCRYER] speech recognition error:", e.error, e.message);
+      this.lastError = e.error;
+      const msg = {
+        "not-allowed": "MIC BLOCKED: ALLOW MICROPHONE FOR THIS SITE",
+        "service-not-allowed": "SPEECH SERVICE BLOCKED BY THE BROWSER",
+        "network": "SPEECH SERVICE UNREACHABLE (BROWSER STT NEEDS GOOGLE; TRY CHROME OR WHISPER)",
+        "no-speech": "NO SPEECH HEARD: TRY AGAIN",
+        "audio-capture": "NO MICROPHONE FOUND",
+      }[e.error] || "SPEECH ERROR: " + e.error;
+      setStatus(msg);
+    };
     this.rec.onresult = e => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) this.transcript += e.results[i][0].transcript + " ";
@@ -351,12 +370,15 @@ class WebSpeechSTT {
   }
   start() {
     this.transcript = "";
+    this.lastError = null;
     try { this.rec.start(); } catch (_) { /* already started */ }
   }
   stop() {
     return new Promise(resolve => {
-      this.rec.onend = () => resolve(this.transcript.trim());
-      this.rec.stop();
+      // Safety net: some browsers never fire onend after stop().
+      const t = setTimeout(() => resolve(this.transcript.trim()), 2500);
+      this.rec.onend = () => { clearTimeout(t); resolve(this.transcript.trim()); };
+      try { this.rec.stop(); } catch (_) { clearTimeout(t); resolve(this.transcript.trim()); }
     });
   }
 }
@@ -414,7 +436,10 @@ function bindPushToTalk() {
   let holding = false;
  
   const press = async () => {
-    if (holding || busy || !sttEngine) return;
+    if (holding || busy || !sttEngine) {
+      console.warn("[SCRYER] press ignored", { holding, busy, hasSTT: !!sttEngine });
+      return;
+    }
     holding = true;
     ui.button.classList.add("listening");
     setStatus("LISTENING...");
@@ -435,7 +460,7 @@ function bindPushToTalk() {
     console.log("[SCRYER] transcript:", JSON.stringify(text));
     
     if (text) consult(text);
-    else setStatus("HOLD [SPACE] OR THE SIGIL TO SPEAK");
+    else if (!sttEngine.lastError) setStatus("NOTHING HEARD: HOLD [SPACE] OR THE SIGIL AND SPEAK");
   };
  
   addEventListener("keydown", e => {
@@ -444,9 +469,16 @@ function bindPushToTalk() {
   addEventListener("keyup", e => {
     if (e.code === CONFIG.PUSH_TO_TALK_KEY) { e.preventDefault(); release(); }
   });
-  ui.button.addEventListener("pointerdown", press);
+  // Pointer capture keeps the press alive even if the button's box shifts
+  // (hover/pulse effects) or the finger drifts; no pointerleave needed.
+  ui.button.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    try { ui.button.setPointerCapture(e.pointerId); } catch (_) { /* unsupported */ }
+    press();
+  });
   ui.button.addEventListener("pointerup", release);
-  ui.button.addEventListener("pointerleave", release);
+  ui.button.addEventListener("pointercancel", release);
+  ui.button.addEventListener("lostpointercapture", release);
 }
  
 /* UI  */
@@ -455,8 +487,15 @@ function buildUI() {
   const wrap = document.createElement("div");
   wrap.id = "voice-panel";
   wrap.innerHTML = `
-    <button id="voice-lang" title="Toggle language / cambiar idioma">[ EN ]</button>
-    <button id="voice-sigil" title="Hold to speak">[ SPEAK ]</button>
+    <div id="voice-langs" role="group" aria-label="Language / Idioma / Langue">
+      ${Object.entries(LANGS).map(([code, l]) =>
+        `<button type="button" class="voice-lang-btn" data-lang="${code}" aria-pressed="false">${l.label}</button>`).join("")}
+    </div>
+    <button id="voice-sigil" title="Hold to speak (SPACE)">
+      <span class="sigil-ico" aria-hidden="true">●</span>
+      <span class="sigil-txt">HOLD TO SPEAK</span>
+      <small>or hold SPACE</small>
+    </button>
     <div id="voice-subtitle"></div>
     <div id="voice-status"></div>
 
@@ -466,46 +505,60 @@ function buildUI() {
   const style = document.createElement("style");
   style.textContent = `
     #voice-panel {
-      position: fixed; right: 28px; bottom: 28px; text-align: right;
+      position: fixed; right: 28px; bottom: 28px; text-align: right; display: flex; flex-direction: column; align-items: flex-end;
       font-family: "Courier New", monospace; letter-spacing: 2px; z-index: 5;
     }
+    #voice-langs { display: inline-flex; margin-bottom: 14px; border: 1px solid rgba(53,224,242,0.5);
+      background: rgba(5,7,10,0.7); backdrop-filter: blur(6px); }
+    .voice-lang-btn {
+      font-family: inherit; font-size: 18px; font-weight: bold; letter-spacing: 3px; cursor: pointer;
+      color: #8ceef9; background: transparent; border: none; padding: 12px 22px; min-width: 64px;
+      transition: background 140ms linear, color 140ms linear;
+    }
+    .voice-lang-btn + .voice-lang-btn { border-left: 1px solid rgba(53,224,242,0.35); }
+    .voice-lang-btn:hover { background: rgba(53,224,242,0.15); }
+    .voice-lang-btn.active { background: #35e0f2; color: #05070a; }
     #voice-sigil {
-      font-family: inherit; font-size: 13px; letter-spacing: 3px; cursor: pointer;
-      color: #c3cad4; background: rgba(5,7,10,0.55);
-      border: 1px solid rgba(195,202,212,0.4); padding: 12px 22px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px; margin-left: auto;
+      font-family: inherit; cursor: pointer; min-width: 240px; padding: 20px 36px;
+      color: #35e0f2; background: rgba(5,7,10,0.7); border: 2px solid #35e0f2; border-radius: 40px;
+      box-shadow: 0 0 22px rgba(53,224,242,0.25);
       backdrop-filter: blur(6px); user-select: none; touch-action: none;
+      transition: background 140ms linear, box-shadow 140ms linear;
     }
-    #voice-lang {
-      font-family: inherit; font-size: 11px; letter-spacing: 3px; cursor: pointer;
-      color: #6b7280; background: rgba(5,7,10,0.55);
-      border: 1px solid rgba(195,202,212,0.25); padding: 6px 12px;
-      backdrop-filter: blur(6px); user-select: none; margin-right: 8px;
-    }
+    #voice-sigil:hover { box-shadow: 0 0 34px rgba(53,224,242,0.45); }
+    #voice-sigil .sigil-ico { font-size: 22px; }
+    #voice-sigil .sigil-txt { font-size: 20px; font-weight: bold; letter-spacing: 4px; }
+    #voice-sigil small { font-size: 12px; letter-spacing: 2px; opacity: 0.7; }
     #voice-sigil.listening {
-      color: #05070a; background: #c3cad4;
-      box-shadow: 0 0 24px rgba(195,202,212,0.5);
+      color: #05070a; background: #35e0f2; box-shadow: 0 0 44px rgba(53,224,242,0.8);
+      animation: sigil-pulse 1.1s ease-in-out infinite;
     }
+    @keyframes sigil-pulse { 50% { box-shadow: 0 0 70px rgba(53,224,242,1); } }
     #voice-status {
-      margin-top: 8px; font-size: 10px; color: #6b7280; min-height: 14px;
+      margin-top: 12px; font-size: 13px; color: #8ceef9; min-height: 14px;
     }
-      #voice-subtitle { position: fixed; left: 50%; bottom: 90px;
-      transform: translateX(-50%); max-width: 60ch; text-align: center;
-      font-size: 13px; color: #c3cad4; text-shadow: 0 0 8px rgba(0,0,0,0.9);
-      letter-spacing: 1px; 
+      #voice-subtitle { position: fixed; left: calc(var(--nav-w, 288px) + 28px); bottom: 28px;
+      width: min(30vw, 420px); text-align: left; pointer-events: none;
+      font-size: 22px; line-height: 1.5; color: #e6fbff; letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      }
+      #voice-subtitle:not(:empty) { padding: 16px 18px; background: rgba(5,7,10,0.72);
+      border-left: 2px solid #35e0f2; backdrop-filter: blur(6px); }
+      @media (max-width: 767px) {
+        #voice-subtitle { left: 16px; right: 16px; width: auto; bottom: calc(var(--nav-h, 64px) + 190px);
+        font-size: 18px; }
       }
   `;
   document.head.appendChild(style);
  
   ui.button = wrap.querySelector("#voice-sigil");
   ui.status = wrap.querySelector("#voice-status");
-  ui.langBtn = wrap.querySelector("#voice-lang");
-  ui.langBtn.addEventListener("click", () => {
+  ui.langBtns = [...wrap.querySelectorAll(".voice-lang-btn")];
+  ui.langBtns.forEach(b => b.addEventListener("click", () => {
     if (busy) return;                       // don't switch mid-consultation
-    // Cycle through every registered language: EN -> ES -> FR -> EN ...
-    const codes = Object.keys(LANGS);
-    const next = codes[(codes.indexOf(currentLang) + 1) % codes.length];
-    setLanguage(next);
-  });
+    setLanguage(b.dataset.lang);
+  }));
 }
  
 function setStatus(msg) {
@@ -517,7 +570,7 @@ function showSubtitle(text) {
   if (!el) return;
   el.textContent = text;
   clearTimeout(showSubtitle._t);
-  showSubtitle._t = setTimeout(() => { el.textContent = ""; }, 14000);
+  showSubtitle._t = setTimeout(() => { el.textContent = ""; }, Math.max(20000, text.length * 200));   // ~20s minimum, longer for long replies
 }
 
 // No self-run: bootVoice() is now a permanent core service, started once

@@ -24,8 +24,10 @@ const { FaceMesh, Hands, Camera } = window;
 let started = false;
 let videoEl = null;
 
-export async function ensurePerception() {
-  if (started) return;      // idempotent: safe to call from anywhere
+/** Boots perception once. Resolves true when the camera is live, false on
+ *  failure (`onStatus(msg)` receives progress + the error text). */
+export async function ensurePerception(onStatus = () => {}) {
+  if (started) return !!videoEl?.srcObject;   // idempotent: safe to call from anywhere
   started = true;
 
   // The video element must live OUTSIDE #page: the router wipes
@@ -37,17 +39,14 @@ export async function ensurePerception() {
   videoEl.style.display = "none";
   document.body.appendChild(videoEl);
 
-  const statusEl = document.getElementById("status");
-
   if (!FaceMesh || !Hands || !Camera) {
-    if (statusEl) {
-      statusEl.textContent = "ERROR: MediaPipe CDN failed to load (check the <script> tags load before the module entry)";
-    }
-    return;
+    started = false;
+    onStatus("MediaPipe failed to load (check your connection)");
+    return false;
   }
 
   try {
-    if (statusEl) statusEl.textContent = "LOADING FACE MESH MODEL...";
+    onStatus("LOADING FACE MESH MODEL...");
 
     const faceMesh = new FaceMesh({
       locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`,
@@ -70,7 +69,7 @@ export async function ensurePerception() {
       }
     });
 
-    if (statusEl) statusEl.textContent = "LOADING HAND TRACKER...";
+    onStatus("LOADING HAND TRACKER...");
 
     const hands = new Hands({
       locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`,
@@ -89,7 +88,7 @@ export async function ensurePerception() {
       }
     });
 
-    if (statusEl) statusEl.textContent = "REQUESTING CAMERA...";
+    onStatus("REQUESTING CAMERA...");
 
     // Face and hands alternate frames: each runs at ~half camera rate,
     // which the EMA smoothing absorbs. Running both per frame would
@@ -108,16 +107,12 @@ export async function ensurePerception() {
     });
     await camera.start();
 
-    if (statusEl) statusEl.textContent = "CALIBRATING NEUTRAL FACE... HOLD STILL";
-    setTimeout(() => {
-      const overlay = document.getElementById("start-overlay");
-      if (overlay) overlay.style.display = "none";
-    }, 900);
+    onStatus("CALIBRATING NEUTRAL FACE... HOLD STILL");
+    return true;
   } catch (err) {
     started = false;
-    if (statusEl) {
-      statusEl.textContent = "ERROR: " + err.message + " (camera needs localhost or https)";
-    }
+    onStatus(err.message || "camera unavailable");
+    return false;
   }
 }
 

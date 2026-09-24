@@ -60,7 +60,7 @@ export function installScryerBridge() {
         eye_contact: state.eyeContact ?? 0.5,
       };
     },
-    // ---- Neural emotion net bridge (core/emotions.js) ----
+    // ---- Neural emotion net bridge (public/emotions.js) ----
     getFaceBox() { return state.faceBox || null; },
     getGazeVector() { return state.gazeSm; },
     pushNeuralEmotion(channels, meta) {

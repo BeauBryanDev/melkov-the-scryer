@@ -10,7 +10,11 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 #glcanvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 video { display: none; }
 
-.hud { position: fixed; inset: 12px; border: 1px solid rgba(195,202,212,0.25); pointer-events: none; }
+/* Overlay chrome is positioned against #page (the router's page container,
+   which is itself fixed and already offset from the nav — left:nav-w on
+   desktop, bottom:nav-h on mobile). Using `absolute` (not `fixed`) keeps the
+   HUD inside the eye's page region instead of sliding under the sidebar. */
+.hud { position: absolute; inset: 12px; border: 1px solid rgba(195,202,212,0.25); pointer-events: none; }
 .hud::before, .hud::after,
 .corner-b::before, .corner-b::after {
   content: ""; position: absolute; width: 22px; height: 22px; border: 2px solid var(--silver);
@@ -21,7 +25,7 @@ video { display: none; }
 .corner-b::after  { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
 .panel {
-  position: fixed; left: 28px; bottom: 28px; min-width: 250px;
+  position: absolute; left: 28px; bottom: 28px; min-width: 250px;
   background: rgba(5,7,10,0.55); border: 1px solid rgba(195,202,212,0.3);
   padding: 12px 14px; backdrop-filter: blur(6px); font-size: 11px; letter-spacing: 1px;
 }
@@ -41,13 +45,17 @@ video { display: none; }
 #state { color: var(--accent); font-weight: bold; }
 
 .top-tag {
-  position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
   font-size: 11px; letter-spacing: 4px; color: rgba(195,202,212,0.75);
   background: rgba(5,7,10,0.4); padding: 6px 16px; border: 1px solid rgba(195,202,212,0.2);
 }
 
+.audio-panel {
+  position: absolute; right: 28px; top: 28px; width: 280px; z-index: 2;
+}
+
 #start-overlay {
-  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 18px; background: radial-gradient(ellipse at center, #0b1017 0%, #05070a 70%);
   z-index: 10;
 }
