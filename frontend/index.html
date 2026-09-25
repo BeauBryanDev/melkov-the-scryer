@@ -42,12 +42,15 @@
        emotion IIFE is live. Do NOT add async/defer or move them after the
        module. (These can later be vendored under /public/mediapipe if you want
        to drop the CDN; keep them classic either way.) -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
   <!-- Pure IIFE (no ES imports): runs continuously and no-ops through
        window.Scryer?.* until the Eye page installs the bridge. -->
+  <!-- Optional remote model URL (e.g. S3/CloudFront). Vite substitutes
+       %VITE_MODEL_URL% at build time; unset, emotions.js falls back to /models/. -->
+  <script>window.SCRYER_MODEL_URL = "%VITE_MODEL_URL%";</script>
   <script src="/emotions.js"></script>
 
   <script type="module" src="/src/main.js"></script>
