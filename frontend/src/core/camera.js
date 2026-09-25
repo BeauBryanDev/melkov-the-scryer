@@ -49,7 +49,7 @@ export async function ensurePerception(onStatus = () => {}) {
     onStatus("LOADING FACE MESH MODEL...");
 
     const faceMesh = new FaceMesh({
-      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`,
+      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${f}`,
     });
     faceMesh.setOptions({
       maxNumFaces: 1,
@@ -72,7 +72,7 @@ export async function ensurePerception(onStatus = () => {}) {
     onStatus("LOADING HAND TRACKER...");
 
     const hands = new Hands({
-      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`,
+      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`,
     });
     hands.setOptions({
       maxNumHands: 2,

@@ -1,4 +1,4 @@
-/* ============================================================
+/*  
    AEGIS SCRYER v5 - NEURAL EMOTION + EYE CONTACT
    EmotiEffLib EfficientNet-B0 (emotieff_b0.onnx, 8 classes)
    running client-side at ~2.5 Hz on face crops provided by the
@@ -16,14 +16,19 @@
      window.Scryer.getFaceBox()   -> {x, y, w, h} in VIDEO pixel coords, or null
      window.Scryer.pushNeuralEmotion(channels, meta)
      window.Scryer.getGazeVector() -> {x, y} (state.gazeSm)
-   ============================================================ */
+  */
 
 "use strict";
 
 (function () {
 
 const EMO = {
-  MODEL_URL: "/models/emotieff_b0.onnx",
+  // Build-time override injected by index.html; an unreplaced "%VITE_..%"
+  // placeholder (var unset) or empty string means "use the bundled copy".
+  MODEL_URL: (typeof window.SCRYER_MODEL_URL === "string" &&
+              /^https?:\/\//.test(window.SCRYER_MODEL_URL))
+    ? window.SCRYER_MODEL_URL
+    : "/models/emotieff_b0.onnx",
   SIZE: 224,                 // EmotiEffLib B0 input: 224x224 RGB aligned face
   INTERVAL_MS: 400,          // ~2.5 Hz: emotions do not change at 60 fps
   CROP_MARGIN: 0.25,         // expand FaceMesh bbox: the model saw full faces
