@@ -15,6 +15,8 @@ precision highp float;
 uniform sampler2D u_prev;
 uniform vec2  u_res;
 uniform float u_time;
+uniform float u_phase;     // integrated fractal clock (renderer.js): never jumps when the mood changes speed
+uniform float u_step;      // frame time in 60 fps units, keeps the feedback loop frame-rate independent
 uniform vec4  u_emotion;   // x=anger y=sadness z=surprise w=joy
 uniform vec2  u_gaze;
 uniform float u_roll;
@@ -106,6 +108,11 @@ float emberLayer(vec2 uv, float t, float scale, float speed) {
    Returns rgb premultiplied by its own alpha in .rgb and
    coverage mask in .a, so the caller can composite over the
    fractal background. p is scene-space relative to eye center. */
+// Overall size of the eye, in the same units as irisR below (screen-heights).
+// Lower = smaller and reads as "further back" in the scene; was 0.30. Users found
+// the eye sitting too close to the front of the screen, overwhelming and a bit scary.
+#define EYE_SCALE 0.64
+
 vec4 magicEye(vec2 p, float t, float anger, float entropy, float blink, float push, float fear) {
   vec4 result = vec4(0.0);
 
@@ -113,7 +120,7 @@ vec4 magicEye(vec2 p, float t, float anger, float entropy, float blink, float pu
   // and dilates everything. An open palm still overrides it and shuts the eye.
   blink = mix(blink, 1.22, fear * 0.7);
   blink *= (1.0 - push * 0.92);
-  float irisR = (0.30 + entropy * 0.10 + fear * 0.11) * (1.0 - push * 0.45);
+  float irisR = (0.30 + entropy * 0.10 + fear * 0.11) * EYE_SCALE * (1.0 - push * 0.45);
   float r = length(p);
   float a = atan(p.y, p.x);
 
@@ -168,14 +175,13 @@ void main() {
   float neutral  = clamp(1.0 - (anger + sadness + surprise + joy), 0.0, 1.0);
   float ent      = u_entropy;
 
-  float speed = 0.16 + anger * 0.8 + joy * 0.3 + surprise * 0.2 + ent * 0.35 - sadness * 0.12;
-  float t = u_time * max(speed, 0.05);
+  float t = u_phase;
 
   vec2 st = gl_FragCoord.xy / u_res;
   vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
 
   // Eye center drifts with the user's gaze (mirrored)
-  vec2 eyeC = u_gaze * vec2(-0.30, 0.24);
+  vec2 eyeC = u_gaze * vec2(-0.30, 0.24) * EYE_SCALE;
 
   /* ---------- Fractal background ---------- */
   vec2 fuv = uv;
@@ -185,22 +191,22 @@ void main() {
   fuv *= mix(1.35, 0.55, clamp(u_mouth * 1.6, 0.0, 1.0));
   fuv *= mix(1.0, 0.45, u_spread);                 // two hands apart: dive through the portal
 
-  // Entropy adds petals and jitters the fold
-  float seg = 8.0 + floor(surprise * 4.0) + floor(ent * 4.0);
+  // Fixed petal count: it used to change in whole steps with surprise/entropy, popping the whole symmetry
+  float seg = 8.0;
   float ang = atan(fuv.y, fuv.x);
   float rad = length(fuv);
   ang = abs(mod(ang, 2.0 * PI / seg) - PI / seg);
   vec2 kuv = rad * vec2(cos(ang), sin(ang));
 
-  float warpAmp = 0.12 + anger * 0.5 + ent * 0.35 + joy * 0.12;
-  vec2 flameDrift = vec2(0.0, -t * (0.4 + anger * 1.6));
+  float warpAmp = 0.09 + anger * 0.35 + ent * 0.22 + joy * 0.08;   // domain-warp jitter, toned down further
+  vec2 flameDrift = vec2(0.0, -t * (0.4 + anger * 0.8));
   vec2 warp = vec2(fbm(kuv * 3.0 + flameDrift),
                    fbm(kuv * 3.0 + flameDrift + vec2(5.2, 1.3)));
   kuv += (warp - 0.5) * warpAmp;
 
   // Julia with entropy-gated depth: more chaos, deeper iteration
   vec2 z = kuv * 1.9;
-  float cAng = t * 0.21;
+  float cAng = t * 0.13;   // slower shape morph
   vec2 c = vec2(cos(cAng), sin(cAng * 1.3)) * (0.72 + 0.06 * sin(t * 0.5));
   float maxIt = 22.0 + ent * 38.0;
   float m = 0.0;
@@ -233,10 +239,11 @@ void main() {
   vec3 col = colNeutral * neutral + colFire * anger + colSnow * sadness
            + colFlower * surprise + colJoy * joy;
 
-  // Particles
-  float snow = snowLayer(uv, u_time, 9.0, 0.35) + snowLayer(uv, u_time, 16.0, 0.6) * 0.6;
+  // Particles - driven by u_phase (the same calmed clock as everything else above), not raw
+  // u_time: these used to ignore the slow-down entirely and kept drifting at full speed.
+  float snow = snowLayer(uv, t, 9.0, 0.22) + snowLayer(uv, t, 16.0, 0.38) * 0.6;
   col += vec3(0.9, 0.95, 1.0) * snow * sadness;
-  float ember = emberLayer(uv, u_time, 12.0, 0.8) + emberLayer(uv, u_time, 20.0, 1.4) * 0.6;
+  float ember = emberLayer(uv, t, 12.0, 0.5) + emberLayer(uv, t, 20.0, 0.9) * 0.6;
   col += vec3(1.0, 0.5, 0.15) * ember * (anger + ent * 0.4);
 
   /* ---------- The Eye, composited on top ---------- */
@@ -250,7 +257,7 @@ void main() {
      anger paints fire, sadness paints snow, surprise paints
      petals, joy paints gold, neutral paints pure light. */
   vec3 rayCol = vec3(0.72, 0.90, 1.00)
-              + pal(u_time * 0.12, vec3(0.0), vec3(0.18), vec3(1.0), vec3(0.0, 0.33, 0.67));
+              + pal(t * 0.12, vec3(0.0), vec3(0.18), vec3(1.0), vec3(0.0, 0.33, 0.67));
   vec3 trailCol = rayCol * neutral
                 + vec3(1.00, 0.42, 0.08) * anger
                 + vec3(0.80, 0.90, 1.00) * sadness
@@ -273,13 +280,13 @@ void main() {
      rotation for the hue-drift hallucination effect. */
   vec2 ecSt = (eyeC * u_res.y + 0.5 * u_res) / u_res;
   vec2 d = st - ecSt;
-  d = rot(d, 0.0025 + ent * 0.012);
-  d *= 1.0 - (0.006 + ent * 0.022 + u_mouth * 0.01);
-  vec2 wobble = (vec2(fbm(st * 5.0 + u_time * 0.15), fbm(st * 5.0 + 31.7 - u_time * 0.12)) - 0.5)
-              * (0.002 + ent * 0.006);
+  d = rot(d, (0.0005 + ent * 0.002) * u_step);
+  d *= 1.0 - (0.0013 + ent * 0.004 + u_mouth * 0.003) * u_step;
+  vec2 wobble = (vec2(fbm(st * 5.0 + u_time * 0.08), fbm(st * 5.0 + 31.7 - u_time * 0.06)) - 0.5)
+              * (0.001 + ent * 0.003);
   vec3 prev = texture2D(u_prev, ecSt + d + wobble).rgb;
-  prev = mix(prev, prev.gbr, 0.06 + ent * 0.10);   // slow hue rotation
-  float decay = 0.54 + ent * 0.33 + sadness * 0.06; // entropy makes trails persist
+  prev = mix(prev, prev.gbr, 0.02 + ent * 0.03);   // slow hue rotation
+  float decay = pow(0.54 + ent * 0.33 + sadness * 0.06, u_step); // entropy makes trails persist
   col = max(col, prev * decay);
 
   // No face: fade to breathing silver

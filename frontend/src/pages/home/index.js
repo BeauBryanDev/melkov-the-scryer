@@ -12,7 +12,7 @@ const CHAMBERS = [
 
 const PILLARS = [
   { h: "PRIVATE BY DESIGN", p: "Face, gaze and hand tracking run inside your browser. Only your spoken text and a few numbers reach the server, never video or audio." },
-  { h: "THE ORACLE",        p: "Hold SPACE or tap the sigil to speak. Melkov answers in English, Spanish or French." },
+  { h: "THE ORACLE",        p: "Hold SPACE or tap the sigil to speak. Asher answers in English, Spanish or French." },
   { h: "OPEN SOURCE",       p: "Every line that touches your camera is public. Trust is verified, not promised." },
 ];
 

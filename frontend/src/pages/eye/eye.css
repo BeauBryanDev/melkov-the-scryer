@@ -25,7 +25,9 @@ video { display: none; }
 .corner-b::after  { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
 .panel {
-  position: absolute; left: 28px; bottom: 28px; min-width: 250px;
+  /* Was bottom-left; moved top-left 2026-09-27 - the spoken subtitle (bottom-left,
+     voice.js) grew to overlap and hide it whenever the creature spoke. */
+  position: absolute; left: 28px; top: 28px; min-width: 250px;
   background: rgba(5,7,10,0.55); border: 1px solid rgba(195,202,212,0.3);
   padding: 12px 14px; backdrop-filter: blur(6px); font-size: 11px; letter-spacing: 1px;
 }
