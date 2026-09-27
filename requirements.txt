@@ -5,3 +5,4 @@ pydantic>=2.8
 pydantic-settings>=2.4
 slowapi>=0.1.9
 piper-tts>=1.4.0      # local CPU text-to-speech (Piper via ONNX Runtime)
+qdrant-client>=1.9      # knowledge archives (RAG tools)
