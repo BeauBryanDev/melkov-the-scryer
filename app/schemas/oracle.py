@@ -41,3 +41,4 @@ class OracleRequest(BaseModel):
 class OracleResponse(BaseModel):
     reply: str
     mood_hint: str  # one word the client may use to tint the eye (e.g. "ember", "frost")
+    tools_used: list[str] = Field(default_factory=list)  # archives Asher consulted this turn (empty = none)
