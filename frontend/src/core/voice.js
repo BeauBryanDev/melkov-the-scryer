@@ -92,7 +92,7 @@ const LANGS = {
 // Supported languages. `webspeech` = BCP-47 tag for the Web Speech API;
 // `whisper` = language name transformers.js expects; `label` = toggle text.
 // consult() and speakStreaming() send `lang: currentLang` so the backend
-// picks the matching Piper voice and makes Melkov reply in that tongue.
+// picks the matching Piper voice and makes Asher reply in that tongue.
 // const LANGS = {
 //   en: { webspeech: "en-US", whisper: "english", label: "EN" },
 //   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" },   // Spain

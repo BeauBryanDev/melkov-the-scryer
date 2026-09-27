@@ -170,7 +170,7 @@ loadModel()
   .then(tick)
   .catch(err => console.error("[SCRYER] emotion net failed to load:", err));
 
-/* ============================================================
+/* 
    INTEGRATION NOTES for app.js
 
    1. Face box from the landmarks you already have (in analyze()):
