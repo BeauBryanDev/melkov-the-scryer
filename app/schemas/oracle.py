@@ -38,7 +38,61 @@ class OracleRequest(BaseModel):
     lang: Literal["en", "es", "fr"] = "en"   # language the oracle replies in
 
 
+class MovieCard(BaseModel):
+    kind: Literal["movie"] = "movie"
+    id: int | None = None
+    title: str | None = None
+    year: str | None = None
+    overview: str | None = None
+    rating: float | None = None
+    poster_url: str | None = None
+    genres: list[str] | None = None
+    runtime: int | None = None
+
+
+class FixtureCard(BaseModel):
+    kind: Literal["fixture"] = "fixture"
+    id: int | None = None
+    date: str | None = None
+    status: str | None = None
+    league: str | None = None
+    home: str | None = None
+    away: str | None = None
+    home_goals: int | None = None
+    away_goals: int | None = None
+    home_logo: str | None = None
+    away_logo: str | None = None
+
+
+class TeamCard(BaseModel):
+    kind: Literal["team"] = "team"
+    id: int | None = None
+    name: str | None = None
+    country: str | None = None
+    founded: int | None = None
+    venue: str | None = None
+    logo: str | None = None
+
+
+class StandingCard(BaseModel):
+    kind: Literal["standing"] = "standing"
+    rank: int | None = None
+    team: str | None = None
+    points: int | None = None
+    played: int | None = None
+    win: int | None = None
+    draw: int | None = None
+    lose: int | None = None
+    goals_diff: int | None = None
+
+
+VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard
+
+
 class OracleResponse(BaseModel):
     reply: str
     mood_hint: str  # one word the client may use to tint the eye (e.g. "ember", "frost")
     tools_used: list[str] = Field(default_factory=list)  # archives Asher consulted this turn (empty = none)
+    # Structured leisure-tool results (movies/football) for the frontend to render as
+    # floating "mirror vision" cards. None = nothing to show this turn.
+    visual_payload: list[VisualCard] | None = None

@@ -41,6 +41,8 @@ def _summarize_fixture(fixture: dict) -> dict:
         "away": fixture.get("teams", {}).get("away", {}).get("name"),
         "home_goals": fixture.get("goals", {}).get("home"),
         "away_goals": fixture.get("goals", {}).get("away"),
+        "home_logo": fixture.get("teams", {}).get("home", {}).get("logo"),
+        "away_logo": fixture.get("teams", {}).get("away", {}).get("logo"),
     }
 
 
@@ -53,6 +55,7 @@ def _summarize_team(item: dict) -> dict:
         "country": team.get("country"),
         "founded": team.get("founded"),
         "venue": venue.get("name"),
+        "logo": team.get("logo"),
     }
 
 

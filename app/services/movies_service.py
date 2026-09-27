@@ -29,14 +29,19 @@ def _params() -> dict:
     return {"api_key": get_settings().tmdb_api_key, "language": "en-US"}
 
 
+_POSTER_BASE = "https://image.tmdb.org/t/p/w342"
+
+
 def _summarize(movie: dict) -> dict:
     """Trim a TMDB movie object to what Asher actually needs to speak about it."""
+    poster_path = movie.get("poster_path")
     return {
         "id": movie.get("id"),
         "title": movie.get("title"),
         "year": (movie.get("release_date") or "")[:4],
         "overview": movie.get("overview"),
         "rating": movie.get("vote_average"),
+        "poster_url": f"{_POSTER_BASE}{poster_path}" if poster_path else None,
     }
 
 
