@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # OpenAI
     openai_api_key: str
-    openai_model: str = "gpt-4o-mini"
+    openai_model: str = "gpt-4o"
     openai_max_tokens: int = 120  # the oracle speaks briefly; TTS punishes verbosity
     openai_temperature: float = 0.8   # high: poetic variance is the point
 

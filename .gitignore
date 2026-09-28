@@ -40,3 +40,4 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 *.sw?
+MoviesApp_old_project/

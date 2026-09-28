@@ -13,6 +13,7 @@ from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.schemas.oracle import OracleRequest, OracleResponse
 from app.schemas.tts import SpeakRequest
+from app.services import football_service, movies_service
 from app.services.oracle_service import consult_oracle
 from app.services.tts_service import synthesize_speech, warm_up_background
 
@@ -54,7 +55,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware( 
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
-    allow_methods=["POST"],
+    allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 ) # Already Fixed at the VPS level
 
@@ -66,7 +67,8 @@ async def health() -> dict:
 
 @app.post("/api/v1/oracle", response_model=OracleResponse)
 @limiter.limit(_limits(settings.rate_limit, 
-                       settings.rate_limit_daily))
+                       settings.rate_limit_daily)
+               ) # sentence-level calls need more headroom
 async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
     if not try_consume(settings.daily_oracle_budget):
         logger.warning("daily oracle budget spent (%d)", 
@@ -90,10 +92,12 @@ async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
 
 @app.post("/api/v1/speak")
 @limiter.limit(_limits(settings.tts_rate_limit, 
-                       settings.tts_rate_limit_daily))   # sentence-level calls need more headroom
+                       settings.tts_rate_limit_daily)
+               ) # sentence-level calls need more headroom
 async def speak(request: Request, body: SpeakRequest) -> Response:
     try:
         audio = await synthesize_speech(body.text, body.lang)
+        
     except Exception:
         logger.exception("tts synthesis failed")
         raise HTTPException(status_code=502, detail="The mirror's voice fails.")
@@ -103,3 +107,66 @@ async def speak(request: Request, body: SpeakRequest) -> Response:
         media_type="audio/wav",
         headers={"Cache-Control": "no-store"},
     )
+
+@app.get("/api/v1/movies/{movie_id}")
+@limiter.limit(_limits(settings.tts_rate_limit,
+                       settings.tts_rate_limit_daily)
+ ) # sentence-level calls need more headroom
+async def movie_detail(request: Request, movie_id: int) -> dict:
+    """Detail panel for a movie card the user clicked (cast, trailer, recommendations)."""
+    if not movies_service.is_configured():
+        raise HTTPException(status_code=503, detail="The archive of films is closed.")
+    
+    try:
+        return await movies_service.get_movie_full(movie_id)
+    
+    except Exception:
+        logger.exception("movie detail failed (id=%s)", movie_id)
+        raise HTTPException(status_code=502, detail="The vision fades.")
+
+
+@app.get("/api/v1/football/team/{team_id}")
+@limiter.limit(_limits(settings.tts_rate_limit,
+                       settings.tts_rate_limit_daily)
+                )  # sentence-level calls need more headroom
+async def football_team(request: Request, 
+                        team_id: int,
+                        league: int | None = None, 
+                        season: int | None = None
+                        ) -> dict:
+    """Team panel for a card the user clicked (info, table, recent/upcoming fixtures). Cached."""
+    if not football_service.is_configured():
+        raise HTTPException(status_code=503, 
+                            detail="The archive of matches is closed.")
+        
+    try:
+        return await football_service.get_team_panel(team_id, league, season)
+    
+    except LookupError:
+        raise HTTPException(status_code=404, detail="The mirror knows no such team.")
+    
+    except Exception:
+        logger.exception("football team panel failed (id=%s)", team_id)
+        raise HTTPException(status_code=502, detail="The vision fades.")
+
+
+@app.get("/api/v1/football/fixture/{fixture_id}")
+@limiter.limit(_limits(settings.tts_rate_limit,
+                       settings.tts_rate_limit_daily)
+               ) # sentence-level calls need more headroom
+async def football_fixture(request: Request, 
+                           fixture_id: int
+                           ) -> dict:
+    """Match panel for a fixture card the user clicked (events, lineups, stats). Cached."""
+    if not football_service.is_configured():
+        raise HTTPException(status_code=503, detail="The archive of matches is closed.")
+    
+    try:
+        return await football_service.get_fixture_detail(fixture_id)
+    
+    except LookupError:
+        raise HTTPException(status_code=404, detail="The mirror knows no such match.")
+    
+    except Exception:
+        logger.exception("football fixture panel failed (id=%s)", fixture_id)
+        raise HTTPException(status_code=502, detail="The vision fades.")

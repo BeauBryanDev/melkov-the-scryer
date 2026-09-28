@@ -31,6 +31,11 @@ _client: AsyncOpenAI | None = None
 
 # Oracle service: Asher as a tool-using agent.
 
+# gpt-4o-mini (o200k_base) token ids for '**', ' **', '*', ' *', '***', '**\n' and backtick runs,
+# so the model cannot emit markdown emphasis that Piper would read aloud.
+NO_MARKDOWN_BIAS = {str(t): -100 for t in (410, 6240, 9, 425, 18204, 1612, 63, 26178, 168394)}
+
+
 def get_client() -> AsyncOpenAI:
     
     global _client
@@ -65,6 +70,7 @@ _CARD_TYPE_BY_TOOL = {
     "get_live_football_fixtures": FixtureCard,
     "get_football_fixtures_by_date": FixtureCard,
     "search_football_team": TeamCard,
+    "get_football_team_fixtures": FixtureCard,
     "get_football_standings": StandingCard,
 }
 
@@ -130,6 +136,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
                 temperature=settings.openai_temperature,
                 presence_penalty=0.65,
                 frequency_penalty=0.5,
+                logit_bias=NO_MARKDOWN_BIAS,
                 **({"tools": tools} if offer_tools else {}),
             )
             msg = completion.choices[0].message
@@ -159,7 +166,8 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
             )
             results = await asyncio.gather(*(run_tool(tc.function.name,
                                                         tc.function.arguments,
-                                                        client) for tc in calls)
+                                                        client) for tc in calls
+                                             )
                                             )
 
             for tc, (result_text, visual) in zip(calls, results):

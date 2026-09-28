@@ -14,7 +14,7 @@ _BASE_URL = "https://v3.football.api-sports.io"
 
 _client: httpx.AsyncClient | None = None
 
-# Leisure archive: API-SPORTS Football (api-football.com v3). Asher reaches
+# Leisure archive: Call API-SPORTS Football (api-football.com v3). Asher reaches
 # this only through the agent tools in agent_tools.py, same pattern as
 # movies_service (TMDB).
 
@@ -202,8 +202,8 @@ async def get_team_fixtures(name: str,
     ordered = sorted((_summarize_fixture(f) for f in data), 
                      key=lambda f: f["date"] or ""
                      )
-    recent = [f for f in ordered if (f["date"] or "") < now][-5:][::-1]
-    upcoming = [f for f in ordered if (f["date"] or "") >= now][:2]
+    recent = [f for f in ordered if (f["date"] or "") < now][-5:][::-1] # get the last 5 fixtures
+    upcoming = [f for f in ordered if (f["date"] or "") >= now][:2] # get the next 2 fixtures
     
     return recent + upcoming
 

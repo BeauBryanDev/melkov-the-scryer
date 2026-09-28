@@ -109,6 +109,20 @@ LEISURE_TOOLS: dict[str, dict] = {
         },
         "handler": lambda args: football_service.search_team(args["name"]),
     },
+    "get_football_team_fixtures": {
+        "description": "A club's latest match results (and its next fixtures) by team name. Use when the person "
+                       "asks how a specific club has been doing, its last scores, or its recent or upcoming games.",
+        "params": {
+            "type": "object",
+            "properties": {
+                "team": {"type": "string", "description": "The club name, e.g. Arsenal."},
+                "season": {"type": "integer", "description": "Season start year, e.g. 2023. Omit unless the "
+                                                              "person names a season."},
+            },
+            "required": ["team"],
+        },
+        "handler": lambda args: football_service.get_team_fixtures(args["team"], args.get("season")),
+    },
     "get_football_standings": {
         "description": "League table/standings for a given league and season. Use after search or when the person "
                        "asks who is leading a league.",
