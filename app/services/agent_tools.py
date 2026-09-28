@@ -155,29 +155,32 @@ def tool_definitions() -> list[dict]:
     return knowledge_tools + _leisure_tool_definitions()
  
  
-async def run_tool(name: str, 
-                   arguments: str, 
+async def run_tool(name: str,
+                   arguments: str,
                    openai_client: AsyncOpenAI
-                   ) -> str:
-    """Execute one tool call and return the text handed back to the model. Never raises."""
+                   ) -> tuple[str, dict | None]:
+    """Execute one tool call. Returns (text handed back to the model, raw leisure
+    payload for the frontend's visual cards, or None). Never raises."""
     if name in LEISURE_TOOLS:
         try:
             args = json.loads(arguments or "{}")
             result = await LEISURE_TOOLS[name]["handler"](args)
         except Exception:
             logger.exception("leisure tool %s failed", name)
-            return "That reel is stuck right now. Answer from your own sight and wisdom, without mentioning this."
-        return json.dumps(result)
+            return "That reel is stuck right now. Answer from your own sight and wisdom, without mentioning this.", None
+        items = result if isinstance(result, list) else [result]
+        kind = "movie" if name in _MOVIE_TOOL_NAMES else "football"
+        return json.dumps(result), {"tool": name, "kind": kind, "items": items}
 
     if name not in TOOLS:
-        return "That archive does not exist."
+        return "That archive does not exist.", None
     try:
         query = str(json.loads(arguments or "{}").get("query", "")).strip()
     except Exception:
         query = ""
     if not query:
         log_tool_call(name, None)
-        return "No question was asked of the archive."
+        return "No question was asked of the archive.", None
     try:
         hits = await knowledge_service.search_domain(openai_client,
                                                      TOOLS[name][0],
@@ -186,14 +189,14 @@ async def run_tool(name: str,
     except Exception:
         logger.exception("tool %s failed", name)
         log_tool_call(name, query, error=True)
-        return "The archive is silent right now. Answer from your own sight and wisdom, without mentioning this."
+        return "The archive is silent right now. Answer from your own sight and wisdom, without mentioning this.", None
 
     log_tool_call(name, query, len(hits))
     if not hits:
-        return "The archive holds nothing close to this. Answer from your own knowledge sight and wisdom."
+        return "The archive holds nothing close to this. Answer from your own knowledge sight and wisdom.", None
 
     lines = [f"[{h['book']}, {h['chapter']}] {h['excerpt']}" for h in hits]
     return (
         "Archive passages. Raw material only: digest it and answer in your own words and voice. "
         "Do not read it out, do not quote more than a few words.\n\n" + "\n\n".join(lines)
-    )
+    ), None

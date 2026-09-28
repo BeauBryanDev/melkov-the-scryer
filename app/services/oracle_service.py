@@ -7,7 +7,15 @@ from openai import AsyncOpenAI
 
 from app.core.config import get_settings
 from app.prompts.oracle_prompt import AGENT_SUFFIX, SYSTEM_PROMPT, LANG_SUFFIXES, build_context_line
-from app.schemas.oracle import OracleRequest, OracleResponse
+from app.schemas.oracle import (
+    FixtureCard,
+    MovieCard,
+    OracleRequest,
+    OracleResponse,
+    StandingCard,
+    TeamCard,
+    VisualCard,
+)
 from app.services.agent_tools import run_tool, tool_definitions
 
 logger = logging.getLogger("oracle")
@@ -39,6 +47,32 @@ MOOD_HINTS = {
     "neutral": "silver",
 }
 
+# tool name -> the VisualCard subtype its raw items should be parsed into.
+_CARD_TYPE_BY_TOOL = {
+    "get_trending_movies": MovieCard,
+    "get_popular_movies": MovieCard,
+    "search_movie": MovieCard,
+    "get_movie_details": MovieCard,
+    "get_live_football_fixtures": FixtureCard,
+    "get_football_fixtures_by_date": FixtureCard,
+    "search_football_team": TeamCard,
+    "get_football_standings": StandingCard,
+}
+
+
+def _cards_from_payload(payload: dict) -> list[VisualCard]:
+    """Parse a leisure tool's raw {"tool", "kind", "items"} payload into typed cards."""
+    card_cls = _CARD_TYPE_BY_TOOL.get(payload["tool"])
+    if card_cls is None:
+        return []
+    cards = []
+    for item in payload["items"]:
+        try:
+            cards.append(card_cls(**item))
+        except Exception:
+            logger.exception("failed to build visual card for %s", payload["tool"])
+    return cards
+
 
 async def consult_oracle(req: OracleRequest) -> OracleResponse:
     settings = get_settings()
@@ -64,6 +98,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
 
     client = get_client()
     tools_used: list[str] = []
+    visual_cards: list[VisualCard] = []
     reply = ""
 
     # Agent loop: THINKING -> (USING_TOOL -> THINKING)* -> SPEAKING. On the last round tools are withheld, so Asher must answer with what he has.
@@ -107,18 +142,20 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
                     ],
                 }
             )
-            results = await asyncio.gather(*(run_tool(tc.function.name, 
-                                                        tc.function.arguments, 
+            results = await asyncio.gather(*(run_tool(tc.function.name,
+                                                        tc.function.arguments,
                                                         client) for tc in calls)
                                             )
-            
-            for tc, result in zip(calls, results):
-                
+
+            for tc, (result_text, visual) in zip(calls, results):
+
                 tools_used.append(tc.function.name)
-                messages.append({"role": "tool", 
-                                    "tool_call_id": tc.id, 
-                                    "content": result}
+                messages.append({"role": "tool",
+                                    "tool_call_id": tc.id,
+                                    "content": result_text}
                                 )
+                if visual is not None:
+                    visual_cards.extend(_cards_from_payload(visual))
             logger.info("asher consulted: %s", 
                         ", ".join(tc.function.name for tc in calls)
                         )
@@ -129,7 +166,8 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
         
         reply = "The oracle is silent right now. inner error , speak back later."
         tools_used = []
-        
+        visual_cards = []
+
 
     logger.info("oracle reply generated (%d chars, tools=%d)",
                 len(reply), len(tools_used))
@@ -137,6 +175,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
     mood = MOOD_HINTS.get(req.telemetry.dominant_state, "silver")
     
     return OracleResponse(reply=reply,
-                          mood_hint=mood, 
-                          tools_used=tools_used
+                          mood_hint=mood,
+                          tools_used=tools_used,
+                          visual_payload=visual_cards or None,
                           )

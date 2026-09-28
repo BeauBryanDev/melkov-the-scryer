@@ -83,6 +83,13 @@ export function attachAudioVisualizer(el) {
   audioViz = el;
 }
 
+/** Eye-page vision-cards overlay; shown with a leisure tool's visual_payload. */
+let visionCards = null;
+
+export function attachVisionCards(el) {
+  visionCards = el;
+}
+
 const LANGS = {
   en: { webspeech: "en-US", whisper: "english", label: "EN" },
   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" },   // Spain
@@ -171,6 +178,7 @@ async function consult(userText) {
  
   const telemetry = sanitizeTelemetry(window.Scryer?.getTelemetry?.());
   const t0 = performance.now();
+  visionCards?.hide?.();   // clear any vision left over from the previous turn
   try {
     const res = await fetch(CONFIG.BACKEND_URL, {
       method: "POST",
@@ -209,6 +217,7 @@ async function consult(userText) {
  
     window.Scryer?.setMood?.(data.mood_hint);
     showSubtitle(data.reply);                       // the reply always appears
+    if (data.visual_payload?.length) visionCards?.show?.(data.visual_payload);
     if (ttsReady) {
       setStatus("THE MIRROR SPEAKS");
       await speakStreaming(data.reply);
