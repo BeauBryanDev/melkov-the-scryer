@@ -7,7 +7,7 @@ const C = CONFIG.GAME_OF_LIFE;
 
 /* Traditional Conway's Game of Life.
    The mortal paints living cells with the mouse; B3/S23 does the rest.
-   No score, no decay, no timer — just the classic automaton. */
+   No score, no decay, no timer — just the classic cell automaton. */
 export default {
   raf: 0,
   sim: null,

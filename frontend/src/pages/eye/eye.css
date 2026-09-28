@@ -16,7 +16,7 @@ scryer-vision-cards { position: fixed; inset: 0; z-index: 5; }
 
 /* Overlay chrome is positioned against #page (the router's page container,
    which is itself fixed and already offset from the nav — left:nav-w on
-   desktop, bottom:nav-h on mobile). Using `absolute` (not `fixed`) keeps the
+   desktop, bottom:nav-h on mobile). Using absolute (not fixed) keeps the
    HUD inside the eye's page region instead of sliding under the sidebar. */
 .hud { position: absolute; inset: 12px; border: 1px solid rgba(195,202,212,0.25); pointer-events: none; }
 .hud::before, .hud::after,

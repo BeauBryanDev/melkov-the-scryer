@@ -1,4 +1,4 @@
-/* ============================================================
+/*  
    SCRYER-VISION-CARDS — custom element
    Renders Asher's leisure-tool results (movies, football fixtures/
    teams/standings) as a floating carousel of dark, cyan-glow cards —
@@ -8,7 +8,7 @@
    Dispatches `vision-show` / `vision-hide` CustomEvents on itself so
    the Eye page can fade the burning-eye canvas out/in without this
    component needing to know anything about the renderer.
-   ============================================================ */
+*/
 
 const PALETTE = {
   cardBg: "rgba(5,7,10,0.88)",

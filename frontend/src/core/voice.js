@@ -1,6 +1,7 @@
 
-// Backend origin: set VITE_BACKEND_URL at build time for deploys (e.g. https://api.example.com).
-const BACKEND = (import.meta.env.VITE_BACKEND_URL || "http://localhost:8001").replace(/\/+$/, "");
+// Backend origin: set VITE_BACKEND_URL at build time for deploys scryer.tensorgeek.com
+const BACKEND = (import.meta.env.VITE_BACKEND_URL ||"http://localhost:8001" || "https://scryer.tensorgeek.com").replace(/\/+$/, "");
+
 
 const CONFIG = {
   BACKEND_URL: `${BACKEND}/api/v1/oracle`,
@@ -17,7 +18,7 @@ const CONFIG = {
   // Client-side reverb — makes the oracle's voice sound cavernous / mystic.
   REVERB_SECONDS: 1.6,   // impulse tail length: bigger = larger "room"
   REVERB_DECAY: 3.2,     // exponential falloff of the tail (higher = shorter, tighter tail)
-  REVERB_WET: 0.16,      // 0..1 wet mix (0 = dry, 1 = all reverb)
+  REVERB_WET: 0.16,      // 0..1 wet mix (z = dry, 1 = all reverb)
 };
  
 /* State */
@@ -102,7 +103,7 @@ const LANGS = {
 // picks the matching Piper voice and makes Asher reply in that tongue.
 // const LANGS = {
 //   en: { webspeech: "en-US", whisper: "english", label: "EN" },
-//   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" },   // Spain
+//   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" }, // Spain
 //   fr: { webspeech: "fr-FR", whisper: "french",  label: "FR" },
 // };
 let currentLang = CONFIG.DEFAULT_LANG;

@@ -1,10 +1,10 @@
-/* ============================================================
+/* 
    GLOBAL MEDIA GATE
    One camera request for the whole temple, never on /home.
    The first non-home route shows a single "awaken" overlay; once
    perception is live it never appears again. The microphone is
    NOT requested here — voice.js asks on the first push-to-talk.
-   ============================================================ */
+*/
 
 import { ensurePerception } from "./camera.js";
 import { bootVoice } from "./voice.js";

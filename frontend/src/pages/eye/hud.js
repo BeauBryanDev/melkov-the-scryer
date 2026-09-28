@@ -1,4 +1,4 @@
-/* ============================================================
+/* 
    HUD
    buildHUD(container) injects the "Soul Telemetry" panel + temple
    chrome into the page and caches the element handles. updateHUD()
@@ -7,7 +7,7 @@
    Element refs are (re)acquired in buildHUD, not at module load, so
    the Eye page can mount/unmount repeatedly without querying a DOM
    that is not there yet.
-   ============================================================ */
+*/
 
 import { state } from "@/core/state.js";
 import { calib } from "@/core/face_mesh.js";

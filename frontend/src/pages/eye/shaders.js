@@ -1,14 +1,14 @@
-/* ============================================================
+/*
    GLSL SHADER SOURCE
    Pure string constants, no WebGL calls. Consumed by renderer.js.
-   ============================================================ */
+*/
 
 export const VERT = `
 attribute vec2 p;
 void main() { gl_Position = vec4(p, 0.0, 1.0); }
 `;
 
-/* ---------- PASS A: scene + feedback accumulation ---------- */
+/* PASS A: scene + feedback accumulation */
 export const SCENE_FRAG = `
 precision highp float;
 
@@ -301,7 +301,7 @@ void main() {
 }
 `;
 
-/* ---------- PASS B: display with post-processing ---------- */
+/* PASS B: display with post-processing  */
 export const POST_FRAG = `
 precision highp float;
 uniform sampler2D u_tex;

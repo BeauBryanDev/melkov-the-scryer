@@ -81,12 +81,12 @@ export function computeGolden(lm) {
   return { golden, ratios };
 }
  
-/* ============================================================
+/*
    Smoothed geometry tracker.
    Landmarks vibrate frame to frame; raw ratios flicker in the
    HUD. This wrapper EMA-smooths every published number so the
    mirror reads as calm measurement, not jitter.
-   ============================================================ */
+*/
  
 const EMA_A = 0.08;
 const ema = (prev, next) => prev + (next - prev) * EMA_A;

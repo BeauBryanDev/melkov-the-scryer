@@ -1,4 +1,4 @@
-/* ============================================================
+/*
    EYE STATE ENGINE  (was the standalone app entry)
    No longer a self-running module: the Eye page (pages/eye/index.js)
    owns the RAF loop, renderer and HUD, and drives this file.
@@ -13,7 +13,7 @@
      uninstallScryerBridge()  - removes it in unmount() so the emotion
                                 net (a permanent classic script) no-ops
                                 while the Eye page is not on screen.
-   ============================================================ */
+*/
 
 import { state, ema, EMA_EMOTION, EMA_MOTION } from "@/core/state.js";
 
@@ -60,7 +60,7 @@ export function installScryerBridge() {
         eye_contact: state.eyeContact ?? 0.5,
       };
     },
-    // ---- Neural emotion net bridge (public/emotions.js) ----
+    //  Neural emotion net bridge (public/emotions.js) 
     getFaceBox() { return state.faceBox || null; },
     getGazeVector() { return state.gazeSm; },
     pushNeuralEmotion(channels, meta) {
@@ -79,8 +79,8 @@ export function installScryerBridge() {
     },
     setSpeaking(level) {
       state.speaking = level;   // add uniform u_speaking, pulse the eye:
-                                // irisR *= 1.0 + u_speaking * 0.12;
-                                // corona *= 1.0 + u_speaking * 0.8;
+      // irisR *= 1.0 + u_speaking * 0.12;
+      // corona *= 1.0 + u_speaking * 0.8;
     },
   };
 }

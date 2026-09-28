@@ -173,7 +173,7 @@ export function createSimulation(canvas, gridSize) {
   US.seeds = gl.getUniformLocation(progSim, "u_seeds[0]");
   const UD = uniforms(progDisplay, ["state", "grid", "res", "time"]);
 
-  // ---- Ping-pong state textures at grid resolution ----
+  // Ping-pong state textures at grid resolution 
   // NEAREST + CLAMP_TO_EDGE: NPOT-safe (power-of-two is no longer required).
   function makeTarget(initial) {
     const tex = gl.createTexture();

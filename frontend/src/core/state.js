@@ -1,20 +1,20 @@
-/* ============================================================
+/*
    SHARED STATE
    The single source of truth read by the renderer and HUD, and
    written by the face / hand analyzers. Everything here is plain
    data + generic helpers — no DOM, no WebGL, no MediaPipe.
-   ============================================================ */
+*/
 
 export const state = {
   raw:    { anger: 0, sadness: 0, surprise: 0, joy: 0 },
   fused:  { anger: 0, sadness: 0, surprise: 0, joy: 0 }, // raw heuristics + CNN
   smooth: { anger: 0, sadness: 0, surprise: 0, joy: 0 },
   // Neural emotion net (logic/emotions.js) writes these at ~2.5 Hz.
-  cnn: null,                 // { anger, sadness, surprise, joy, fear } or null
-  emotionalEntropy: 0,       // Shannon entropy of the CNN distribution, 0..1
-  eyeContact: 0.5,           // 0 = always avoiding, 1 = locked on the eye
-  faceBox: null,             // { x, y, w, h } in VIDEO pixel coords, or null
-  landmarks: null,           // Most recent face mesh landmarks array, or null
+  cnn: null,   // { anger, sadness, surprise, joy, fear } or null
+  emotionalEntropy: 0, // Shannon entropy of the CNN distribution, 0..1
+  eyeContact: 0.5,  // 0 = always avoiding, 1 = locked on the eye
+  faceBox: null,    // { x, y, w, h } in VIDEO pixel coords, or null
+  landmarks: null,   // Most recent face mesh landmarks array, or null
   gaze:   { x: 0, y: 0 },
   gazeSm: { x: 0, y: 0 },
   roll: 0, rollSm: 0,

@@ -12,7 +12,7 @@
 
    Model file: models/emotieff_b0.onnx (16.2 MB, cached by the browser)
 
-   Requires from app.js (see integration notes at the bottom):
+   Requires from app.js  (after Scryer.init()):
      window.Scryer.getFaceBox()   -> {x, y, w, h} in VIDEO pixel coords, or null
      window.Scryer.pushNeuralEmotion(channels, meta)
      window.Scryer.getGazeVector() -> {x, y} (state.gazeSm)
@@ -58,7 +58,7 @@ let session = null;
 let cropCanvas, cropCtx;
 let inputName = null;
 
-/* ---------------- Eye contact tracker ----------------
+/*  Eye contact tracker  
    No calibration needed: the procedural eye hovers near the
    center, so "looking at the mirror" means a small, stable
    gaze vector. We keep a rolling window of the last ~8 s. */
@@ -79,7 +79,7 @@ function trackEyeContact() {
   return sum / CONTACT.samples.length;   // 0 = always avoiding, 1 = locked on
 }
 
-/* ---------------- Model ---------------- */
+/*  Model  */
 
 async function loadModel() {
   session = await ort.InferenceSession.create(EMO.MODEL_URL, {
@@ -122,7 +122,7 @@ function softmax(logits) {
   return exps.map(v => v / s);
 }
 
-/* ---------------- Inference loop ---------------- */
+/*  Inference loop  */
 
 async function tick() {
   const video = document.getElementById("video");
@@ -205,7 +205,6 @@ loadModel()
           const cnn = state.cnn ? state.cnn[k] : state.raw[k];
           state.fused[k] = state.raw[k] * (1 - W_CNN) + cnn * W_CNN;
         }
-        // then smooth state.fused instead of state.raw
 
       And blend emotional entropy into the Entropy Engine:
         entropy = 0.6 * motionEntropy + 0.4 * (state.emotionalEntropy ?? 0);
@@ -222,6 +221,6 @@ loadModel()
    The existing prompt already tells the Scryer to comment on what it
    sees: with eye_contact=0.1 it will produce the "do I scare you,
    mortal?" moment on its own.
-   ============================================================ */
+   */
 
 })();

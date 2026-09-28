@@ -34,7 +34,7 @@
     white-space: nowrap;
   }
    
-  /* ---------------- Garden HUD ---------------- */
+  /*  Garden HUD  */
    
   .life-hud {
   position: absolute;
@@ -82,7 +82,7 @@
     border-top: 1px dashed var(--cyan-ghost);
   }
 
-  /* ---------------- Controls ---------------- */
+  /*  Controls  */
 
   .life-controls {
     display: grid;
@@ -119,7 +119,7 @@
     color: var(--cyan-dim);
   }
 
-  /* ---------------- Responsive ---------------- */
+  /*  Responsive  */
 
   @media (max-width: 767px) {
     .life-hud {

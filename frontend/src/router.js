@@ -1,4 +1,4 @@
-/* ============================================================
+/*
    AEGIS SCRYER - TEMPLE ROUTER
    Hash-based, zero dependencies.
 
@@ -10,11 +10,10 @@
                                 // framebuffers, remove listeners.
                                 // MUST be safe to call once.
      }
-
    Core services (camera, FaceMesh, emotion net, voice) are NOT pages:
    they boot once in main.js and never unmount. Pages only own what
    they render.
-   ============================================================ */
+*/
 
 import { syncGate } from "./core/permissions.js";
 

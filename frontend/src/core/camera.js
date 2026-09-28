@@ -1,18 +1,8 @@
-/* ============================================================
+/* 
    TEMPLE-LIFETIME PERCEPTION SERVICE
    Boots once, never closes. Pages NEVER call stop(): the
    telemetry must flow in every chamber.
-
-   NOTE ON LOAD ORDER — READ BEFORE MOVING SCRIPT TAGS:
-   FaceMesh, Hands and Camera are GLOBALS provided by the three
-   MediaPipe CDN <script> tags in the HTML. Those tags are CLASSIC
-   (non-module, non-async) scripts placed BEFORE the module entry,
-   so they execute during HTML parsing, while every `type="module"`
-   script (this one, via main.js) is deferred and runs afterwards.
-   That guarantees the globals exist by the time ensurePerception()
-   runs. If you ever make the CDN tags `async`/`defer` or move them
-   after the module, this ordering breaks — hence the explicit guard.
-   ============================================================ */
+*/
 
 import { state } from "./state.js";
 import { analyze } from "./face_mesh.js";
@@ -50,7 +40,7 @@ export async function ensurePerception(onStatus = () => {}) {
 
     const faceMesh = new FaceMesh({
       locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${f}`,
-    });
+    }); // TODO: change to the new version
     faceMesh.setOptions({
       maxNumFaces: 1,
       refineLandmarks: true,

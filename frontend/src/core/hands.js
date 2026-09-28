@@ -1,4 +1,4 @@
-/* ============================================================
+/* 
    HAND ANALYSIS (v3)
    MediaPipe Hands, 21 landmarks per hand, up to 2 hands.
    Landmark indices: 0 wrist, 4 thumb_tip, 8 index_tip,
@@ -8,7 +8,7 @@
    proximity proxy (bigger hand = closer to camera).
    Writes fingertip trails, pinch-drag, push and portal-spread
    into the shared state.
-   ============================================================ */
+*/
 
 import { state } from "./state.js";
 

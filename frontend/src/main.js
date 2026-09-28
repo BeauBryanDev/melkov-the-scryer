@@ -1,7 +1,7 @@
-/* ============================================================
+/*  
    AEGIS SCRYER - BOOT
    Core services boot here once and never unmount; pages consume them.
-   ============================================================ */
+*/
    import { startRouter } from "./router.js";
    import { installScryerBridge } from "./core/fusion.js";
 

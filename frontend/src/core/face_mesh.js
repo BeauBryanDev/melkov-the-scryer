@@ -1,10 +1,10 @@
-/* ============================================================
+/*
    FACE ANALYSIS + ENTROPY ENGINE
    Turns a MediaPipe FaceMesh landmark array into emotion, gaze,
    roll, mouth, blink and an entropy (facial-chaos) index, all
    written into the shared state. Geometric approach, calibrated
    against a neutral face captured in the first CALIB_FRAMES.
-   ============================================================ */
+*/
 
 import { state, clamp01 } from "./state.js";
 
@@ -34,7 +34,7 @@ function updateFaceBox(lm) {
 export const calib = { n: 0, brow: 0, smile: 0, eye: 0, ready: false };
 const CALIB_FRAMES = 50;
 
-/* ---------- Entropy: chaos over a rolling window ----------
+/*   Entropy: chaos over a rolling window  
    variance of landmark motion + rate of emotional change +
    raw emotional magnitude. High entropy = deeper fractal,
    stronger feedback, wider eye. */

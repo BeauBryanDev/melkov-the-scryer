@@ -1,8 +1,8 @@
-/* ============================================================
+/* 
    SCRYER-AUDIO-CHART — custom element
    Classic oscilloscope waveform + spectrum bars in blue-cyan.
    Fed by voice.js during push-to-talk (mic) and TTS playback.
-   ============================================================ */
+*/
 
 const PALETTE = {
   bg: "rgba(5,7,10,0.72)",

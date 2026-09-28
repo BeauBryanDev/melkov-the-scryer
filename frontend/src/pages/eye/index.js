@@ -1,4 +1,4 @@
-/* ============================================================
+/* 
    THE EYE — page module
    Owns the burning fractal eye: builds its DOM (GL canvas, hidden
    video, telemetry HUD, wake overlay), drives the RAF loop, and
@@ -12,7 +12,7 @@
    The emotion net (public/emotions.js) is a permanent classic script
    in the shell; it no-ops through window.Scryer?.* while this page
    is unmounted, and comes alive again when the bridge is reinstalled.
-   ============================================================ */
+*/
 
 import { createRenderer } from "./renderer.js";
 import { buildHUD, updateHUD, getAudioChart } from "./hud.js";
@@ -56,8 +56,8 @@ export default {
     let hudTick = 0;
     const loop = () => {
       const t = (performance.now() - t0) / 1000;
-      fuseAndSmooth();                 // CNN + heuristic fusion, EMA smoothing
-      this.renderer.frame(t);          // reads state, draws two passes (kept alive even while hidden)
+      fuseAndSmooth();  // CNN + heuristic fusion, EMA smoothing
+      this.renderer.frame(t); // reads state, draws two passes (kept alive even while hidden)
       if (++hudTick % 4 === 0) updateHUD();
       this.raf = requestAnimationFrame(loop);
     };

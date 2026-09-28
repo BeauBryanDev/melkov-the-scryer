@@ -1,4 +1,4 @@
-/* ============================================================
+/* 
    WEBGL RENDERER  (factory form)
    createRenderer(canvas) builds a GL context, both shader
    programs, the ping-pong framebuffers and the two-pass render,
@@ -8,13 +8,13 @@
    MUST be dispose()'d in unmount() so the GL context, textures and
    framebuffers are released instead of leaking one per visit.
    Reads the shared state each frame; writes nothing back.
-   ============================================================ */
+*/
 
 import { VERT, SCENE_FRAG, POST_FRAG } from "./shaders.js";
 import { state } from "@/core/state.js";
 import { CONFIG } from "@/core/config.js";
 
-/* ---------- Visual smoothing (Eye page only) ----------
+/* Visual smoothing (Eye page only) 
    state.*Sm are tuned for telemetry (Asher must read them fast). The screen
    gets a second, slower, time-based low-pass so face-mesh jitter and the 2.5 Hz
    neural updates never reach the fractal as sudden jumps. TAU = seconds to settle
@@ -69,7 +69,7 @@ export function createRenderer(canvas) {
   US.tips = gl.getUniformLocation(progScene, "u_tips[0]");
   const UP = uniforms(progPost, ["tex", "res", "time", "entropy"]);
 
-  /* ---------- Ping-pong framebuffers ---------- */
+  /* Ping-pong framebuffers */
   let texA, texB, fboA, fboB;
 
   function makeTarget(w, h) {
@@ -110,7 +110,7 @@ export function createRenderer(canvas) {
   window.addEventListener("resize", resize);
   resize();
 
-  /* ---------- Smoothed values the shader actually sees ---------- */
+  /* Smoothed values the shader actually sees */
   let lastT = null;
   let phase = 0;
   let vis = null;
@@ -144,7 +144,7 @@ export function createRenderer(canvas) {
     return dt;
   }
 
-  /* ---------- Two-pass render: scene+feedback into FBO, post to screen, swap ---------- */
+  /*Two-pass render: scene+feedback into FBO, post to screen, swap */
   function frame(t) {
     const dt = stepVisual(t);
     // PASS A: render scene + feedback into fboB, reading texA
@@ -191,7 +191,7 @@ export function createRenderer(canvas) {
     [fboA, fboB] = [fboB, fboA];
   }
 
-  /* ---------- Release every GL resource + the context itself ---------- */
+  /*Release every GL resource + the context itself */
   function dispose() {
     window.removeEventListener("resize", resize);
     destroyTargets();

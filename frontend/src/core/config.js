@@ -1,12 +1,15 @@
-/* ============================================================
+/* 
    AEGIS SCRYER - CONFIG
    The single source of truth. No other file declares URLs,
    thresholds, or magic numbers. If a constant is used by more
    than one module, it lives here.
-   ============================================================ */
+*/
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL || "http://localhost:8001";
-
+// just for local dev, the REAL  DOMAIN is scryer.tensorgeek.com 
+// const BACKEND = "https://scryer.tensorgeek.com";
+// it is set a Vercel env variable in the deploy script
+// const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://scryer.tensorgeek.com";
 export const CONFIG = {
   BACKEND,
   ORACLE_URL: `${BACKEND}/api/v1/oracle`,
@@ -42,7 +45,7 @@ export const CONFIG = {
     INTERVAL_MS: 400,    // ~2.5 Hz neural anchor
     CROP_MARGIN: 0.25,
     FUSION_CNN_WEIGHT: 0.55,
-    MEAN: [0.485, 0.456, 0.406],
+    MEAN: [0.485, 0.456, 0.406],  // ImageNet normalization
     STD: [0.229, 0.224, 0.225],
   },
 
@@ -58,7 +61,7 @@ export const CONFIG = {
   },
 
   RENDER: {
-    SCALE: 0.55,         // fractal pages render below native resolution
+    SCALE: 0.55,  // fractal pages render below native resolution
     MAX_DPR: 2,
   },
 
