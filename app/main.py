@@ -25,7 +25,10 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 def _limits(per_minute: str, per_day: str) -> str:
-    """Combine limits for slowapi ("10/minute;200/day"); empty parts are skipped."""
+    """
+    Combine limits for slowapi ("10/minute;200/day"); 
+    empty parts are skipped.
+    """
     return ";".join(x.strip() for x in (per_minute, per_day) if x and x.strip())
 
 
@@ -48,12 +51,12 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-app.add_middleware(
+app.add_middleware( 
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_methods=["POST"],
     allow_headers=["Content-Type"],
-)
+) # Already Fixed at the VPS level
 
 
 @app.get("/health")
@@ -62,16 +65,20 @@ async def health() -> dict:
 
 
 @app.post("/api/v1/oracle", response_model=OracleResponse)
-@limiter.limit(_limits(settings.rate_limit, settings.rate_limit_daily))
+@limiter.limit(_limits(settings.rate_limit, 
+                       settings.rate_limit_daily))
 async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
     if not try_consume(settings.daily_oracle_budget):
-        logger.warning("daily oracle budget spent (%d)", settings.daily_oracle_budget)
+        logger.warning("daily oracle budget spent (%d)", 
+                       settings.daily_oracle_budget
+                       )
         raise HTTPException(
             status_code=503,
             detail="The mirror rests until tomorrow.",
         )
     try:
         return await consult_oracle(body)
+    
     except Exception:
         logger.exception("oracle consultation failed")
         # In-fiction error message: the client speaks this aloud too
@@ -82,7 +89,8 @@ async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
 
 
 @app.post("/api/v1/speak")
-@limiter.limit(_limits(settings.tts_rate_limit, settings.tts_rate_limit_daily))   # sentence-level calls need more headroom
+@limiter.limit(_limits(settings.tts_rate_limit, 
+                       settings.tts_rate_limit_daily))   # sentence-level calls need more headroom
 async def speak(request: Request, body: SpeakRequest) -> Response:
     try:
         audio = await synthesize_speech(body.text, body.lang)

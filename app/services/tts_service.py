@@ -10,10 +10,11 @@ from app.core.config import get_settings
 
 # Text-to-speech service: local Piper (piper-tts) -> WAV bytes.
 
-# Runs entirely on CPU on this machine — no GPU, no per-request cost, no
+# IT Runs entirely on CPU on this machine — no GPU, no per-request cost, no
 # browser model download. Piper medium voices synthesize several× faster than
 # real-time on CPU, so this replaced Kokoro (which was ~4s/reply here).
-
+# I Attempt Kokoro first but it never worked well enough to be worth the
+# complexity. The browser just plays the WAV bytes we return.
 # Multilingual: one Piper voice per language, cached in a registry keyed by
 # language code ("en", "es"). Synthesis is CPU-bound and blocking, so it runs
 # in a threadpool to keep the async event loop responsive. A semaphore
@@ -60,12 +61,15 @@ def _syn_config():
 
 
 def _synthesize_sync(text: str, lang: str) -> bytes:
+    
     buf = io.BytesIO()
     with wave.open(buf, "wb") as wav:
         # synthesize_wav writes frames AND sets the WAV header (channels /
         # width / rate) from the voice's own sample rate. synthesize() (no
-        # _wav) only returns AudioChunks and writes nothing — don't use it.
-        _get_voice(lang).synthesize_wav(text, wav, syn_config=_syn_config())
+        # _wav) only returns AudioChunks and writes nothing .
+        _get_voice(lang).synthesize_wav(text, wav, 
+                                        syn_config=_syn_config()
+                                        )
         
     return buf.getvalue()
 
@@ -90,9 +94,15 @@ async def synthesize_speech(text: str, lang: str = "en") -> bytes:
 
 
 async def warm_up_background() -> None:
-    """Load + warm every voice in the background so the first real request in
-    each language is fast, without blocking server startup."""
-    warmups = {"en": "The eye opens.", "es": "El ojo se abre.", "fr": "L'œil s'ouvre."}
+    """
+    Load + warm every voice in the background so the first real request in
+    each language is fast, without blocking server startup.
+    """
+    warmups = {
+                "en": "The eye opens.", 
+                "es": "El ojo se abre.", 
+                "fr": "L'œil s'ouvre."
+               }
     # Only warm languages that actually have a registered voice file.
     registered = get_settings().tts_voices
     
@@ -105,7 +115,9 @@ async def warm_up_background() -> None:
             async with _synth_lock:
                 
                 await run_in_threadpool(_synthesize_sync, 
-                                        phrase, lang)
+                                        phrase, 
+                                        lang
+                                        )
             logger.info("piper warm-up complete (lang=%s)", lang)
             
         except Exception:

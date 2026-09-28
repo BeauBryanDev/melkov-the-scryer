@@ -1,5 +1,3 @@
-# The tools Asher can call. One per knowledge domain.
-
 
 import json
 import logging
@@ -13,7 +11,9 @@ from app.services import movies_service
 
 logger = logging.getLogger("agent_tools")
 
+# The tools Asher can call. One per knowledge domain.
 # tool name -> (Qdrant domain value, description the model reads to decide when to use it)
+
 TOOLS: dict[str, tuple[str, str]] = {
     "search_mindfulness_knowledge": (
         "mindfulness",
@@ -28,13 +28,12 @@ TOOLS: dict[str, tuple[str, str]] = {
     "search_life_strategy_knowledge": (
         "life_strategy",
         "Consult the strategy archive (The 48 Laws of Power, The Art of War, The Prince by Niccolo Machiavelli). "
-        "Use when the person faces conflict, rivals, timing, ambition, influence, or a hard decision about how to act "
-        "in the world.",
+        "Use when the person faces conflict, rivals, timing, ambition, leadership, or a hard decision about how to act  at work, school or in life in general and they want grow up in life.",
     ),
     "search_learning_knowledge": (
         "learning_strategies",
         "Consult the learning archive (Ultralearning). Use when the person wants to learn, practice, or master "
-        "something, or struggles with focus, memory, or how to study.",
+        "something a new subject or skill, or struggles with focus, memory, or how to study.",
     ),
 }
 
@@ -44,7 +43,7 @@ _PARAMS = {
         "query": {
             "type": "string",
             "description": "What to look up, in plain English, about the person's real need "
-                           "(e.g. 'calming a racing mind before sleep'). Always English, whatever language you reply in.",
+                           "(e.g. 'calming a racing mind before sleep'). Always English, whatever language you reply in. stcik to user languages even though English",
         }
     },
     "required": ["query"],
@@ -126,15 +125,29 @@ LEISURE_TOOLS: dict[str, dict] = {
 }
 
 _MOVIE_TOOL_NAMES = {"get_trending_movies", "get_popular_movies", "search_movie", "get_movie_details"}
+_FOOTBALL_TOOL_NAMES = {"get_live_fixtures", "get_football_fixtures_by_date", "search_football_team", "get_football_standings"}
 
 
 def _leisure_tool_definitions() -> list[dict]:
     """Each leisure provider degrades independently: its tools vanish if its API key is unset."""
     defs = []
     for name, spec in LEISURE_TOOLS.items():
+        
         provider = movies_service if name in _MOVIE_TOOL_NAMES else football_service
+        
         if provider.is_configured():
-            defs.append({"type": "function", "function": {"name": name, "description": spec["description"], "parameters": spec["params"]}})
+            
+            defs.append(
+                {
+                    "type": "function", 
+                    "function": {
+                        "name": name, 
+                        "description": spec["description"], 
+                        "parameters": spec["params"]
+                        }
+                    }
+                )
+            
     return defs
 
 
@@ -146,9 +159,12 @@ def tool_definitions() -> list[dict]:
     if knowledge_service.is_configured():
         # Knowledge tools are available if Qdrant is configured
         knowledge_tools = [
-            {"type": "function", "function": {"name": name, 
-                                              "description": desc, 
-                                              "parameters": _PARAMS}
+            {"type": "function", 
+             "function": {
+                        "name": name, 
+                        "description": desc, 
+                        "parameters": _PARAMS
+                        }
              }
             for name, (_, desc) in TOOLS.items()
         ]
@@ -165,22 +181,29 @@ async def run_tool(name: str,
         try:
             args = json.loads(arguments or "{}")
             result = await LEISURE_TOOLS[name]["handler"](args)
+            
         except Exception:
             logger.exception("leisure tool %s failed", name)
             return "That reel is stuck right now. Answer from your own sight and wisdom, without mentioning this.", None
+        
         items = result if isinstance(result, list) else [result]
         kind = "movie" if name in _MOVIE_TOOL_NAMES else "football"
+        
         return json.dumps(result), {"tool": name, "kind": kind, "items": items}
 
     if name not in TOOLS:
         return "That archive does not exist.", None
+    
     try:
         query = str(json.loads(arguments or "{}").get("query", "")).strip()
+        
     except Exception:
         query = ""
+        
     if not query:
         log_tool_call(name, None)
         return "No question was asked of the archive.", None
+    
     try:
         hits = await knowledge_service.search_domain(openai_client,
                                                      TOOLS[name][0],
@@ -196,6 +219,7 @@ async def run_tool(name: str,
         return "The archive holds nothing close to this. Answer from your own knowledge sight and wisdom.", None
 
     lines = [f"[{h['book']}, {h['chapter']}] {h['excerpt']}" for h in hits]
+    
     return (
         "Archive passages. Raw material only: digest it and answer in your own words and voice. "
         "Do not read it out, do not quote more than a few words.\n\n" + "\n\n".join(lines)

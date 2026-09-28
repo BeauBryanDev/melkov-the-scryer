@@ -6,7 +6,12 @@ import httpx
 from openai import AsyncOpenAI
 
 from app.core.config import get_settings
-from app.prompts.oracle_prompt import AGENT_SUFFIX, SYSTEM_PROMPT, LANG_SUFFIXES, build_context_line
+from app.prompts.oracle_prompt import (
+    AGENT_SUFFIX, 
+    SYSTEM_PROMPT, 
+    LANG_SUFFIXES, 
+    build_context_line
+)
 from app.schemas.oracle import (
     FixtureCard,
     MovieCard,
@@ -18,9 +23,11 @@ from app.schemas.oracle import (
 )
 from app.services.agent_tools import run_tool, tool_definitions
 
+
 logger = logging.getLogger("oracle")
 
 _client: AsyncOpenAI | None = None
+
 
 # Oracle service: Asher as a tool-using agent.
 
@@ -29,12 +36,14 @@ def get_client() -> AsyncOpenAI:
     global _client
     
     if _client is None:
+        
         _client = AsyncOpenAI(
             api_key=get_settings().openai_api_key,
             # Fail fast on dead connections, retry transient network errors.
             timeout=httpx.Timeout(20.0, connect=5.0),
             max_retries=2,
         )
+        
     return _client
 
 # Maps the dominant emotional channel to a one-word tint the client
@@ -63,14 +72,19 @@ _CARD_TYPE_BY_TOOL = {
 def _cards_from_payload(payload: dict) -> list[VisualCard]:
     """Parse a leisure tool's raw {"tool", "kind", "items"} payload into typed cards."""
     card_cls = _CARD_TYPE_BY_TOOL.get(payload["tool"])
+    
     if card_cls is None:
         return []
+    
     cards = []
+    
     for item in payload["items"]:
         try:
             cards.append(card_cls(**item))
+            
         except Exception:
             logger.exception("failed to build visual card for %s", payload["tool"])
+            
     return cards
 
 
@@ -101,7 +115,8 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
     visual_cards: list[VisualCard] = []
     reply = ""
 
-    # Agent loop: THINKING -> (USING_TOOL -> THINKING)* -> SPEAKING. On the last round tools are withheld, so Asher must answer with what he has.
+    # Agent loop: THINKING -> (USING_TOOL -> THINKING)* -> SPEAKING. 
+    # On the last round tools are withheld, so Asher must answer with what he has.
     try:
         
         for round_no in range(settings.agent_max_tool_rounds + 1):
@@ -148,7 +163,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
                                             )
 
             for tc, (result_text, visual) in zip(calls, results):
-
+                    # TODO : visuals are not yet supported, ugly UI for now
                 tools_used.append(tc.function.name)
                 messages.append({"role": "tool",
                                     "tool_call_id": tc.id,
@@ -156,6 +171,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
                                 )
                 if visual is not None:
                     visual_cards.extend(_cards_from_payload(visual))
+                    
             logger.info("asher consulted: %s", 
                         ", ".join(tc.function.name for tc in calls)
                         )

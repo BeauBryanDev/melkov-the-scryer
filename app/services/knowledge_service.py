@@ -54,7 +54,7 @@ async def search_domain(openai_client: AsyncOpenAI,
                         domain: str, 
                         query: str
                         ) -> list[dict]:
-    """Top passages for `query` within one knowledge domain (a `domain` payload value)."""
+    """Top passages for query within one knowledge domain payload value."""
     s = get_settings()
     
     emb = await openai_client.embeddings.create(model=s.embedding_model, 
@@ -63,7 +63,8 @@ async def search_domain(openai_client: AsyncOpenAI,
         collection_name=s.qdrant_collection,
         query=emb.data[0].embedding,
         query_filter=Filter(must=[FieldCondition(key="domain", 
-                                                 match=MatchValue(value=domain))
+                                                 match=MatchValue(value=domain)
+                                                 )
                                   ]),
         limit=s.rag_top_k, # passages returned per tool call
         score_threshold=s.rag_min_score, # cosine floor: below this the archive "holds nothing"

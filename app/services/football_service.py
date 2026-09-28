@@ -1,6 +1,3 @@
-# Leisure archive: API-SPORTS Football (api-football.com v3). Asher reaches
-# this only through the agent tools in agent_tools.py, same pattern as
-# movies_service (TMDB).
 
 import logging
 
@@ -14,19 +11,26 @@ _BASE_URL = "https://v3.football.api-sports.io"
 
 _client: httpx.AsyncClient | None = None
 
+# Leisure archive: API-SPORTS Football (api-football.com v3). Asher reaches
+# this only through the agent tools in agent_tools.py, same pattern as
+# movies_service (TMDB).
 
 def is_configured() -> bool:
     return bool(get_settings().football_api_key)
 
 
 def get_client() -> httpx.AsyncClient:
+    
     global _client
+    
     if _client is None:
+        
         _client = httpx.AsyncClient(
             base_url=_BASE_URL,
             timeout=10.0,
             headers={"x-apisports-key": get_settings().football_api_key},
         )
+        
     return _client
 
 
@@ -47,8 +51,10 @@ def _summarize_fixture(fixture: dict) -> dict:
 
 
 def _summarize_team(item: dict) -> dict:
+    
     team = item.get("team", {})
     venue = item.get("venue", {})
+    
     return {
         "id": team.get("id"),
         "name": team.get("name"),
@@ -60,6 +66,7 @@ def _summarize_team(item: dict) -> dict:
 
 
 def _summarize_standing(row: dict) -> dict:
+    
     return {
         "rank": row.get("rank"),
         "team": row.get("team", {}).get("name"),
@@ -73,8 +80,10 @@ def _summarize_standing(row: dict) -> dict:
 
 
 async def get_live_fixtures() -> list[dict]:
+    
     res = await get_client().get("/fixtures", params={"live": "all"})
     res.raise_for_status()
+    
     return [_summarize_fixture(f) for f in res.json().get("response", [])[:10]]
 
 
@@ -82,20 +91,30 @@ async def get_todays_fixtures(date: str) -> list[dict]:
     """`date` must be YYYY-MM-DD."""
     res = await get_client().get("/fixtures", params={"date": date})
     res.raise_for_status()
+    
     return [_summarize_fixture(f) for f in res.json().get("response", [])[:10]]
 
 
 async def search_team(name: str) -> list[dict]:
     res = await get_client().get("/teams", params={"search": name})
     res.raise_for_status()
+    
     return [_summarize_team(t) for t in res.json().get("response", [])[:5]]
 
 
 async def get_standings(league_id: int, season: int) -> list[dict]:
-    res = await get_client().get("/standings", params={"league": league_id, "season": season})
+    res = await get_client().get("/standings", 
+                                 params={
+                                     "league": league_id, 
+                                     "season": season
+                                     }
+                                 )
     res.raise_for_status()
     response = res.json().get("response", [])
+    
     if not response:
         return []
+    
     table = response[0].get("league", {}).get("standings", [[]])[0]
+    
     return [_summarize_standing(row) for row in table]

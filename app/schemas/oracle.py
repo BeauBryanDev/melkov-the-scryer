@@ -1,17 +1,17 @@
-"""Pydantic schemas: the contract between the browser and the oracle."""
 
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
-
+# Pydantic schemas: the contract between the browser and the oracle.
 class Telemetry(BaseModel):
-    """Snapshot of the Entropy Engine at the moment the user spoke.
+    """
+    Snapshot of the Entropy Engine at the moment the user spoke.
 
     All values come from client-side FaceMesh analysis. The oracle
     never sees video or audio, only these numbers.
     """
-
+    # this come from live camera by mediapipe js 
     anger: float = Field(0.0, ge=0.0, le=1.0)
     sadness: float = Field(0.0, ge=0.0, le=1.0)
     surprise: float = Field(0.0, ge=0.0, le=1.0)
@@ -91,7 +91,7 @@ VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard
 
 class OracleResponse(BaseModel):
     reply: str
-    mood_hint: str  # one word the client may use to tint the eye (e.g. "ember", "frost")
+    mood_hint: str  # one word the client may use to tint the eye  
     tools_used: list[str] = Field(default_factory=list)  # archives Asher consulted this turn (empty = none)
     # Structured leisure-tool results (movies/football) for the frontend to render as
     # floating "mirror vision" cards. None = nothing to show this turn.
