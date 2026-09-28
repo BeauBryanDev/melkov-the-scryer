@@ -62,6 +62,10 @@ class FixtureCard(BaseModel):
     away_goals: int | None = None
     home_logo: str | None = None
     away_logo: str | None = None
+    home_id: int | None = None
+    away_id: int | None = None
+    league_id: int | None = None
+    season: int | None = None
 
 
 class TeamCard(BaseModel):
@@ -78,6 +82,10 @@ class StandingCard(BaseModel):
     kind: Literal["standing"] = "standing"
     rank: int | None = None
     team: str | None = None
+    team_id: int | None = None
+    team_logo: str | None = None
+    league_id: int | None = None
+    season: int | None = None
     points: int | None = None
     played: int | None = None
     win: int | None = None
