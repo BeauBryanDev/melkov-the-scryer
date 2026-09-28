@@ -7,6 +7,7 @@ import wave
 from fastapi.concurrency import run_in_threadpool
 
 from app.core.config import get_settings
+from app.core.text import to_plain_speech
 
 # Text-to-speech service: local Piper (piper-tts) -> WAV bytes.
 
@@ -76,7 +77,7 @@ def _synthesize_sync(text: str, lang: str) -> bytes:
 
 async def synthesize_speech(text: str, lang: str = "en") -> bytes:
 
-    text = " ".join(text.split())  # normalize whitespace
+    text = " ".join(to_plain_speech(text).split())  # strip markdown + normalize whitespace
 
     if not text:
         raise ValueError("empty text, nothing to synthesize")

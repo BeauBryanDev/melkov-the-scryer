@@ -90,3 +90,48 @@ async def get_movie_details(movie_id: int) -> dict:
     summary["runtime"] = movie.get("runtime")
     
     return summary
+
+
+_PROFILE_BASE = "https://image.tmdb.org/t/p/w185"
+
+
+async def get_movie_full(movie_id: int) -> dict:
+    """Everything the detail panel needs, in one TMDB call (append_to_response)."""
+
+    params = {**_params(), 
+              "append_to_response": "credits,videos,recommendations"
+              }
+    res = await get_client().get(f"/movie/{movie_id}", 
+                                 params=params
+                                 )
+    res.raise_for_status()
+    movie = res.json()
+
+    detail = _summarize(movie)
+    detail["kind"] = "movie"
+    detail["genres"] = [g["name"] for g in movie.get("genres", [])]
+    detail["runtime"] = movie.get("runtime")
+    detail["tagline"] = movie.get("tagline")
+
+    credits = movie.get("credits") or {}
+    detail["directors"] = [c["name"] for c in credits.get("crew", []) if c.get("job") == "Director"]
+    detail["cast"] = [
+        {
+            "name": a.get("name"),
+            "character": a.get("character"),
+            "photo_url": f"{_PROFILE_BASE}{a['profile_path']}" if a.get("profile_path") else None,
+        }
+        for a in credits.get("cast", [])[:12]
+    ]
+
+    videos = (movie.get("videos") or {}).get("results", [])
+    youtube = [v for v in videos if v.get("site") == "YouTube" and v.get("type") == "Trailer"]
+    trailer = next((v for v in youtube if v.get("official")), youtube[0] if youtube else None)
+    detail["trailer_key"] = trailer["key"] if trailer else None
+
+    detail["recommendations"] = [
+        {**_summarize(m), "kind": "movie"}
+        for m in (movie.get("recommendations") or {}).get("results", [])[:10]
+    ]
+
+    return detail
