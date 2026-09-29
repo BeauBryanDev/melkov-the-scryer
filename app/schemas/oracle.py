@@ -94,7 +94,53 @@ class StandingCard(BaseModel):
     goals_diff: int | None = None
 
 
-VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard
+class WeatherDay(BaseModel):
+    date: str | None = None
+    condition: str | None = None
+    temp_max: float | None = None
+    temp_min: float | None = None
+    rain_chance: int | None = None
+
+
+class WeatherCard(BaseModel):
+    kind: Literal["weather"] = "weather"
+    place: str | None = None
+    region: str | None = None      # disambiguates names like Springfield
+    country: str | None = None
+    temperature: float | None = None
+    feels_like: float | None = None
+    humidity: int | None = None
+    wind_kmh: float | None = None
+    precipitation: float | None = None
+    condition: str | None = None
+    is_day: bool = True
+    days: list[WeatherDay] = Field(default_factory=list)
+
+
+class NewsCard(BaseModel):
+    kind: Literal["news"] = "news"
+    title: str | None = None
+    description: str | None = None   # short summary only; full article text is never sent
+    source: str | None = None
+    published_at: str | None = None
+    image: str | None = None
+    url: str | None = None
+
+
+class GameCard(BaseModel):
+    kind: Literal["game"] = "game"
+    id: int | None = None
+    title: str | None = None
+    year: str | None = None
+    summary: str | None = None
+    rating: int | None = None          # IGDB aggregate score, 0-100
+    genres: list[str] | None = None
+    platforms: list[str] | None = None
+    cover_url: str | None = None
+    url: str | None = None             # the game's IGDB page
+
+
+VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard | WeatherCard | NewsCard | GameCard
 
 
 class OracleResponse(BaseModel):

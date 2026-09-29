@@ -7,7 +7,10 @@ from openai import AsyncOpenAI
 from app.core.logging import log_tool_call
 from app.services import knowledge_service
 from app.services import football_service
+from app.services import games_service
 from app.services import movies_service
+from app.services import news_service
+from app.services import weather_service
 
 logger = logging.getLogger("agent_tools")
 
@@ -43,7 +46,8 @@ _PARAMS = {
         "query": {
             "type": "string",
             "description": "What to look up, in plain English, about the person's real need "
-                           "(e.g. 'calming a racing mind before sleep'). Always English, whatever language you reply in. stcik to user languages even though English",
+                           "(e.g. 'calming a racing mind before sleep'). Always write the query in English, "
+                           "even when the person speaks another language.",
         }
     },
     "required": ["query"],
@@ -90,7 +94,7 @@ LEISURE_TOOLS: dict[str, dict] = {
         "params": {"type": "object", "properties": {}, "required": []},
         "handler": lambda args: football_service.get_live_fixtures(),
     },
-    "get_football_fixtures_by_date": {
+    "get_football_fixtures_by_date": { # Footbal-API /Free tier only allowed up to 2024 football fixtures stats  , thisi s a limitaions from the free plan rather than a bug.
         "description": "Football fixtures scheduled on a given date. Use when the person asks what matches are on "
                        "today or on a specific date.",
         "params": {
@@ -111,12 +115,14 @@ LEISURE_TOOLS: dict[str, dict] = {
     },
     "get_football_team_fixtures": {
         "description": "A club's latest match results (and its next fixtures) by team name. Use when the person "
-                       "asks how a specific club has been doing, its last scores, or its recent or upcoming games.",
+                       "asks how a specific club has been doing, its last scores, or its recent or upcoming games. "
+                       "NOTE: the data source only covers seasons up to 2024/25, so these are archive results, "
+                       "not this week's games - say so plainly (e.g. 'the latest I can see is from spring 2025').",
         "params": {
             "type": "object",
             "properties": {
                 "team": {"type": "string", "description": "The club name, e.g. Arsenal."},
-                "season": {"type": "integer", "description": "Season start year, e.g. 2023. Omit unless the "
+                "season": {"type": "integer", "description": "Season start year, e.g. 2024 (2022-2024 only). Omit unless the "
                                                               "person names a season."},
             },
             "required": ["team"],
@@ -130,12 +136,72 @@ LEISURE_TOOLS: dict[str, dict] = {
             "type": "object",
             "properties": {
                 "league_id": {"type": "integer", "description": "API-SPORTS league id (e.g. 39 for Premier League)."},
-                "season": {"type": "integer", "description": "Season year, e.g. 2023."},
+                "season": {"type": "integer", "description": "Season year, 2022-2024 only, e.g. 2024."},
             },
             "required": ["league_id", "season"],
         },
         "handler": lambda args: football_service.get_standings(args["league_id"], args["season"]),
     },
+}
+
+LEISURE_TOOLS["get_weather"] = {
+    "description": "Current weather and a 3-day forecast for a named city or town. Use when the person asks about "
+                   "the weather, temperature, rain, or whether to bring a coat or plan something outdoors. They "
+                   "must have named a place: if they did not, ask which city instead of guessing.",
+    "params": {
+        "type": "object",
+        "properties": {"city": {"type": "string",
+                                "description": "City or town name only, e.g. 'Madrid'. Add the country if the "
+                                               "name is ambiguous, e.g. 'Springfield, Illinois'."}},
+        "required": ["city"],
+    },
+    "handler": lambda args: weather_service.get_weather(args["city"]),
+    "provider": weather_service,
+    "kind": "weather",
+    "not_found": "No such place was found. Ask the person which city they mean.",
+}
+
+LEISURE_TOOLS["get_news"] = {
+    "description": "Recent news headlines from real publishers. Use when the person asks what is happening in the "
+                   "world, a country or a topic, or wants the news. Give `query` for a specific topic or place "
+                   "(e.g. 'Spain', 'Middle East conflict', 'electric cars'); otherwise give one `category`; with "
+                   "neither you get general headlines. Articles are about 12 hours old, so never call it "
+                   "'breaking'. Report neutrally and name the source.",
+    "params": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Topic or place to search for. Optional."},
+            "category": {"type": "string", "enum": list(news_service.CATEGORIES),
+                         "description": "One category, used only when no query is given. Default general."},
+            "lang": {"type": "string", "enum": ["en", "es", "fr"],
+                     "description": "Language of the articles; match the language the person speaks."},
+        },
+        "required": [],
+    },
+    "handler": lambda args: news_service.get_news(args.get("query"), args.get("category"), args.get("lang")),
+    "provider": news_service,
+    "kind": "news",
+    "not_found": "No news came back for this. Say so briefly, without inventing any headline.",
+}
+
+LEISURE_TOOLS["get_videogames"] = {
+    "description": "Videogame lookups (IGDB). Use when the person asks about a game, what to play, or new and "
+                   "upcoming releases. Give `query` when they name a game, series or topic (e.g. 'Zelda', "
+                   "'cozy farming games'); otherwise pick one `list`: top_rated (all-time best), new_releases "
+                   "(last few months), or upcoming. With neither you get top_rated.",
+    "params": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Game title, series or topic to search. Optional."},
+            "list": {"type": "string", "enum": list(games_service.LISTS),
+                     "description": "Curated list, used only when no query is given. Default top_rated."},
+        },
+        "required": [],
+    },
+    "handler": lambda args: games_service.get_games(args.get("query"), args.get("list")),
+    "provider": games_service,
+    "kind": "game",
+    "not_found": "No games came back for this. Say so briefly, without inventing any title.",
 }
 
 _MOVIE_TOOL_NAMES = {"get_trending_movies", "get_popular_movies", "search_movie", "get_movie_details"}
@@ -147,7 +213,7 @@ def _leisure_tool_definitions() -> list[dict]:
     defs = []
     for name, spec in LEISURE_TOOLS.items():
         
-        provider = movies_service if name in _MOVIE_TOOL_NAMES else football_service
+        provider = spec.get("provider") or (movies_service if name in _MOVIE_TOOL_NAMES else football_service)
         
         if provider.is_configured():
             
@@ -200,8 +266,12 @@ async def run_tool(name: str,
             logger.exception("leisure tool %s failed", name)
             return "That reel is stuck right now. Answer from your own sight and wisdom, without mentioning this.", None
         
+        if not result:
+            return LEISURE_TOOLS[name].get(
+                "not_found", "Nothing came back for this. Say so briefly, without inventing details."), None
+
         items = result if isinstance(result, list) else [result]
-        kind = "movie" if name in _MOVIE_TOOL_NAMES else "football"
+        kind = LEISURE_TOOLS[name].get("kind") or ("movie" if name in _MOVIE_TOOL_NAMES else "football")
         
         return json.dumps(result), {"tool": name, "kind": kind, "items": items}
 

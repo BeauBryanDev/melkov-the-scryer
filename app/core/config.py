@@ -1,6 +1,7 @@
 
 from functools import lru_cache
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,11 +29,19 @@ class Settings(BaseSettings):
     agent_max_tool_rounds: int = 2 # max tool-use round trips before Asher must answer
     tmdb_api_key: str = ""  # for movies service
     football_api_key: str = ""  # for football service
+    gnews_api_key: str = ""  # for news service (GNews free tier: 100 req/day, 12h delay, dev/testing only)
+    # IGDB (videogames) authenticates through Twitch app credentials. The bare CLIENT_ID /
+    # CLIENT_SECRET names in .env are accepted as well as the explicit TWITCH_* ones; the
+    # short-lived BEARER_TOKEN in .env is deliberately ignored - the service mints its own.
+    twitch_client_id: str = Field("", validation_alias=AliasChoices("TWITCH_CLIENT_ID", "CLIENT_ID"))
+    twitch_client_secret: str = Field("", validation_alias=AliasChoices("TWITCH_CLIENT_SECRET", "CLIENT_SECRET"))
+    igdb_cache_ttl: int = 1800  # seconds
+    gnews_cache_ttl: int = 3600  # seconds; data is already 12h old on the free plan and quota is tiny
     # API-SPORTS free plan is ~100 requests/day, so every upstream call is cached in memory.
     football_cache_ttl: int = 900       # seconds: standings, fixtures by date, team fixtures
     football_static_ttl: int = 86400    # seconds: team info, finished matches (rarely change)
     football_live_ttl: int = 120        # seconds: live fixtures / matches in progress
-    football_default_season: int = 2023  # free plan can't use last=/next=, so fixtures need a season; 2023 verified on the free tier (0 = none)
+    football_default_season: int = 2024  # free plan can't use last=/next=, so fixtures need a season; free tier only allows 2022-2024, so 2024 (the 2024/25 season) is the newest available (0 = none)
 
     # Text-to-speech: local Piper (piper-tts), CPU-only, no per-request cost.
     # Piper medium voices run several× faster than real-time on CPU — much

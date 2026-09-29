@@ -14,7 +14,10 @@ from app.prompts.oracle_prompt import (
 )
 from app.schemas.oracle import (
     FixtureCard,
+    GameCard,
     MovieCard,
+    NewsCard,
+    WeatherCard,
     OracleRequest,
     OracleResponse,
     StandingCard,
@@ -31,7 +34,7 @@ _client: AsyncOpenAI | None = None
 
 # Oracle service: Asher as a tool-using agent.
 
-# gpt-4o-mini (o200k_base) token ids for '**', ' **', '*', ' *', '***', '**\n' and backtick runs,
+# gpt-4o (o200k_base) token ids for '**', ' **', '*', ' *', '***', '**\n' and backtick runs,
 # so the model cannot emit markdown emphasis that Piper would read aloud.
 NO_MARKDOWN_BIAS = {str(t): -100 for t in (410, 6240, 9, 425, 18204, 1612, 63, 26178, 168394)}
 
@@ -72,6 +75,9 @@ _CARD_TYPE_BY_TOOL = {
     "search_football_team": TeamCard,
     "get_football_team_fixtures": FixtureCard,
     "get_football_standings": StandingCard,
+    "get_weather": WeatherCard,
+    "get_news": NewsCard,
+    "get_videogames": GameCard,
 }
 
 
