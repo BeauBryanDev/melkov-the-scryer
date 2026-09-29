@@ -5,14 +5,26 @@
   --accent: #8be9fd;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: "Courier New", monospace; color: var(--silver); }
+html, body { width: 100%; 
+  height: 100%; 
+  overflow: hidden; background: var(--bg); 
+  font-family: "Courier New", monospace; 
+  color: var(--silver); }
 
-#glcanvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; transition: opacity 600ms ease; }
+#glcanvas { position: fixed; 
+  inset: 0; 
+  width: 100%; 
+  height: 100%; 
+  display: block; 
+  transition: opacity 600ms ease; }
+  
 #glcanvas.eye-hidden { opacity: 0; }
 video { display: none; }
 
-/* The vision-cards overlay sits above the eye, below the wake gate. */
-scryer-vision-cards { position: fixed; inset: 0; z-index: 5; }
+/* The vision-cards overlay sits above the eye, below the wake gate. Absolute (not
+   fixed) so it fills #page - the region right of the sidebar / above the mobile
+   bar - instead of sliding under the nav. */
+scryer-vision-cards { position: absolute; inset: 0; z-index: 5; }
 
 /* Overlay chrome is positioned against #page (the router's page container,
    which is itself fixed and already offset from the nav — left:nav-w on

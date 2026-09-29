@@ -97,8 +97,8 @@ const LANGS = {
   fr: { webspeech: "fr-FR", whisper: "french",  label: "FR" },
 };
 
-// Supported languages. `webspeech` = BCP-47 tag for the Web Speech API;
-// `whisper` = language name transformers.js expects; `label` = toggle text.
+// Supported languages. webspeech = BCP-47 tag for the Web Speech API;
+// whisper = language name transformers.js expects; label = toggle text.
 // consult() and speakStreaming() send `lang: currentLang` so the backend
 // picks the matching Piper voice and makes Asher reply in that tongue.
 // const LANGS = {
@@ -235,7 +235,7 @@ async function consult(userText) {
   }
 }
  
-/*  - TTS
+/* TTS (Text-to-Speech)
    The reply text is sent to the backend (/api/v1/speak), which returns
    encoded audio (OpenAI TTS). We decode it via Web Audio and play it
    through an analyser so the eye still pulses to the voice. */
@@ -549,15 +549,16 @@ function buildUI() {
       margin-top: 12px; font-size: 13px; color: #8ceef9; min-height: 14px;
     }
       #voice-subtitle { position: fixed; left: calc(var(--nav-w, 288px) + 28px); bottom: 28px;
-      width: min(30vw, 420px); text-align: left; pointer-events: none;
-      font-size: 22px; line-height: 1.5; color: #e6fbff; letter-spacing: 1px;
+      width: min(30vw, 420px); text-align: left; pointer-events: auto;
+      font-size: 16px; line-height: 1.45; color: #e6fbff; letter-spacing: 0.5px;
+      max-height: 45vh; overflow-y: auto; overflow-wrap: anywhere; box-sizing: border-box;
       text-shadow: 0 0 8px rgba(0,0,0,0.9);
       }
       #voice-subtitle:not(:empty) { padding: 16px 18px; background: rgba(5,7,10,0.72);
       border-left: 2px solid #35e0f2; backdrop-filter: blur(6px); }
       @media (max-width: 767px) {
         #voice-subtitle { left: 16px; right: 16px; width: auto; bottom: calc(var(--nav-h, 64px) + 190px);
-        font-size: 18px; }
+        font-size: 14px; max-height: 30vh; }
       }
   `;
   document.head.appendChild(style);
