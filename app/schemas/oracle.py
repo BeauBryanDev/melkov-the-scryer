@@ -145,6 +145,9 @@ VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard | WeatherCard | N
 
 class OracleResponse(BaseModel):
     reply: str
+    # Speech-safe representation of reply. Kept separate from the visual text
+    # so Markdown, URLs, and card metadata never reach Piper.
+    speech_text: str | None = None
     mood_hint: str  # one word the client may use to tint the eye  
     tools_used: list[str] = Field(default_factory=list)  # archives Asher consulted this turn (empty = none)
     # Structured leisure-tool results (movies/football) for the frontend to render as

@@ -221,7 +221,8 @@ async function consult(userText) {
     if (data.visual_payload?.length) visionCards?.show?.(data.visual_payload);
     if (ttsReady) {
       setStatus("THE MIRROR SPEAKS");
-      await speakStreaming(data.reply);
+      const speechText = data.speech_text || data.reply; // old backends remain compatible
+      await speakStreaming(speechText);
     } else {
       setStatus("THE VOICE STILL WAKES... (text only)");
     }

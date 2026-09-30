@@ -61,6 +61,9 @@
   margin-bottom: 40px;
 }
 .hero-cta { font-size: 17px; padding: 18px 46px; letter-spacing: 5px; }
+.tech-icons { display: flex; align-items: center; justify-content: center; gap: 18px; width: min(100%, 620px); margin-top: 28px; padding: 8px 12px; overflow-x: auto; }
+.tech-icon { flex: 0 0 auto; width: 30px; height: 30px; object-fit: contain; opacity: 0.78; filter: drop-shadow(0 0 8px rgba(53, 224, 242, 0.18)); transition: opacity 160ms ease, transform 160ms ease; }
+.tech-icon:hover { opacity: 1; transform: translateY(-2px); }
 .hero-note { margin-top: 20px; font-size: 13px; letter-spacing: 1px; color: var(--cyan-dim); }
 
 /* Sections */

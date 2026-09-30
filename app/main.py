@@ -14,7 +14,7 @@ from app.core.logging import configure_logging
 from app.schemas.oracle import OracleRequest, OracleResponse
 from app.schemas.tts import SpeakRequest
 from app.services import football_service, movies_service
-from app.services.oracle_service import consult_oracle
+from app.agent.agent import consult_oracle
 from app.services.tts_service import synthesize_speech, warm_up_background
 
 configure_logging()

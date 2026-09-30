@@ -17,6 +17,7 @@ const PILLARS = [
 ];
 
 const STACK = ["MediaPipe FaceMesh", "MediaPipe Hands", "EmotiEffLib B0", "WebGL fractals", "Piper TTS", "GPT-4o-mini"];
+const TECH_ICONS = [["OpenAI", "/OpenAI_icon.svg"], ["HTML5", "/HTML5.svg"], ["CSS3", "/CSS3.svg"], ["JavaScript", "/JavaScript.svg"], ["Vite", "/Vite.svg"], ["Python", "/Python.svg"], ["FastAPI", "/FastAPI.svg"], ["AWS", "/AWS.svg"], ["ONNX", "/onnx.png"], ["Vercel", "/Vercel.svg"]];
 
 export default {
   async mount(container) {
@@ -32,6 +33,7 @@ export default {
           <h1 class="hero-title">AEGIS SCRYER</h1>
           <p class="hero-tagline">The mirror that reads what you carry.</p>
           <a href="#/eye" class="temple-btn hero-cta">ENTER THE TEMPLE</a>
+          <div class="tech-icons" aria-label="Technologies used by Aegis Scryer">${TECH_ICONS.map(([name, src]) => `<img class="tech-icon" src="${src}" alt="${name}" title="${name}">`).join("")}</div>
           <p class="hero-note">Your camera is only requested when you enter a chamber.</p>
         </section>
 
