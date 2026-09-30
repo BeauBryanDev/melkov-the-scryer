@@ -218,6 +218,87 @@ function timeAgo(iso) {
 // Only http(s) links are ever opened, whatever the API hands back.
 const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : "");
 
+function bookCard(c) {
+  const cover = safeUrl(c.cover_url);
+  const buyLink = safeUrl(c.buy_link);
+  const previewLink = safeUrl(c.preview_link);
+  const authors = Array.isArray(c.authors) ? c.authors.filter(Boolean).join(" · ") : "";
+  const categories = Array.isArray(c.categories) ? c.categories.filter(Boolean) : [];
+  const rating = typeof c.rating === "number" ? `★ ${esc(c.rating.toFixed(1))}` : "";
+  const links = [
+    previewLink ? `<a class="book-link" href="${esc(previewLink)}" target="_blank" rel="noopener noreferrer">PREVIEW</a>` : "",
+    buyLink ? `<a class="book-link" href="${esc(buyLink)}" target="_blank" rel="noopener noreferrer">${c.price ? `BUY · ${esc(c.price)}` : "OPEN BOOK"}</a>` : "",
+  ].filter(Boolean).join("");
+  return `
+    <article class="card card--book">
+      ${cover ? `<img class="book-cover" src="${esc(cover)}" alt="${esc(c.title)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="book-cover book-cover--none">NO COVER</div>`}
+      <div class="body">
+        <h3>${esc(c.title)}</h3>
+        ${authors ? `<p class="book-authors">${esc(authors)}</p>` : ""}
+        <div class="book-facts">
+          ${c.published_date ? `<span>${esc(c.published_date)}</span>` : ""}
+          ${c.publisher ? `<span>${esc(c.publisher)}</span>` : ""}
+          ${c.page_count != null ? `<span>${esc(c.page_count)} pages</span>` : ""}
+          ${rating ? `<span class="book-rating">${rating}</span>` : ""}
+          ${c.price ? `<span>${esc(c.price)}</span>` : ""}
+          ${c.id ? `<span>ID: ${esc(c.id)}</span>` : ""}
+        </div>
+        ${categories.length ? `<div class="chips">${categories.map(category => `<span class="chip">${esc(category)}</span>`).join("")}</div>` : ""}
+        ${c.description ? `<p class="book-description">${esc(c.description)}</p>` : ""}
+        ${links ? `<div class="book-links">${links}</div>` : ""}
+      </div>
+    </article>`;
+}
+
+function musicDuration(seconds) {
+  if (!Number.isFinite(Number(seconds))) return "";
+  const total = Math.max(0, Math.round(Number(seconds)));
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
+function musicCard(c) {
+  const cover = safeUrl(c.cover_url);
+  const preview = safeUrl(c.preview_url);
+  const link = safeUrl(c.link);
+  const body = `
+      ${cover ? `<img class="music-cover" src="${esc(cover)}" alt="${esc(c.title)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="music-cover music-cover--none">NO COVER</div>`}
+      <div class="body">
+        <h3>${esc(c.title)}</h3>
+        <p class="meta">${esc(c.artist || "Unknown artist")}</p>
+        ${c.album ? `<p class="meta">${esc(c.album)}</p>` : ""}
+        <div class="music-meta">${c.duration != null ? esc(musicDuration(c.duration)) : ""}</div>
+        ${preview ? `<audio class="music-preview" controls preload="none" src="${esc(preview)}"></audio>` : ""}
+        ${link ? `<a class="music-link" href="${esc(link)}" target="_blank" rel="noopener noreferrer">OPEN IN DEEZER</a>` : ""}
+      </div>`;
+  return `<div class="card card--music">${body}</div>`;
+}
+
+function artistCard(c) {
+  const picture = safeUrl(c.picture_url);
+  const link = safeUrl(c.link);
+  const body = `
+      ${picture ? `<img class="artist-picture" src="${esc(picture)}" alt="${esc(c.name)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="artist-picture artist-picture--none">NO IMAGE</div>`}
+      <div class="body"><h3>${esc(c.name)}</h3></div>`;
+  return link
+    ? `<a class="card card--artist" href="${esc(link)}" target="_blank" rel="noopener noreferrer">${body}</a>`
+    : `<div class="card card--artist">${body}</div>`;
+}
+
+function albumCard(c) {
+  const cover = safeUrl(c.cover_url);
+  const link = safeUrl(c.link);
+  const body = `
+      ${cover ? `<img class="album-cover" src="${esc(cover)}" alt="${esc(c.title)}" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="album-cover album-cover--none">NO COVER</div>`}
+      <div class="body">
+        <h3>${esc(c.title)}</h3>
+        ${c.artist ? `<p class="meta">${esc(c.artist)}</p>` : ""}
+        ${c.release_date ? `<p class="meta">Released ${esc(c.release_date)}</p>` : ""}
+      </div>`;
+  return link
+    ? `<a class="card card--album" href="${esc(link)}" target="_blank" rel="noopener noreferrer">${body}</a>`
+    : `<div class="card card--album">${body}</div>`;
+}
+
 function newsCard(c) {
   const url = safeUrl(c.url);
   const img = safeUrl(c.image);
@@ -449,6 +530,31 @@ class ScryerVisionCards extends HTMLElement {
         .card--weather .wx-cond { text-transform: capitalize; color: ${PALETTE.textDim}; }
         .card--weather .wx-rain { text-align: right; color: ${PALETTE.accent}; }
 
+        .card--book { width: 290px; display: block; }
+        .book-cover { width: 100%; height: 300px; object-fit: cover; display: block; }
+        .book-cover--none { display: flex; align-items: center; justify-content: center; color: ${PALETTE.textDim}; background: rgba(139,233,253,0.06); font-size: 11px; letter-spacing: 2px; }
+        .card--book .body { padding: 12px 14px 16px; }
+        .card--book h3 { color: ${PALETTE.text}; font-size: 15px; line-height: 1.35; margin-bottom: 6px; }
+        .book-authors { color: ${PALETTE.accent}; font-size: 11px; line-height: 1.4; margin-bottom: 8px; }
+        .book-facts { display: flex; flex-wrap: wrap; gap: 4px 8px; color: ${PALETTE.textDim}; font-size: 10px; line-height: 1.4; margin-bottom: 8px; }
+        .book-facts span + span::before { content: "·"; margin-right: 8px; color: ${PALETTE.borderGlow}; }
+        .book-rating { color: ${PALETTE.accent}; }
+        .book-description { color: rgba(230,251,255,0.78); font-size: 11px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; margin: 10px 0; }
+        .book-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .book-link { color: ${PALETTE.accent}; font-size: 10px; letter-spacing: 1px; text-decoration: none; }
+        .book-link:hover { text-decoration: underline; }
+
+        .card--music, .card--artist, .card--album { width: 240px; display: block; color: inherit; text-decoration: none; }
+        .card--music .music-cover, .card--artist .artist-picture, .card--album .album-cover { width: 100%; height: 210px; object-fit: cover; display: block; }
+        .music-cover--none, .artist-picture--none, .album-cover--none { display: flex !important; align-items: center; justify-content: center; color: ${PALETTE.textDim}; background: rgba(139,233,253,0.06); font-size: 11px; letter-spacing: 2px; }
+        .card--music .body, .card--artist .body, .card--album .body { padding: 12px 14px 16px; }
+        .card--music h3, .card--artist h3, .card--album h3 { color: ${PALETTE.text}; font-size: 14px; margin-bottom: 6px; }
+        .card--music .meta, .card--artist .meta, .card--album .meta { color: ${PALETTE.textDim}; font-size: 11px; margin: 3px 0; }
+        .music-meta { color: ${PALETTE.accent}; font-size: 11px; margin-top: 8px; }
+        .music-preview { width: 100%; height: 32px; margin-top: 10px; }
+        .music-link { display: inline-block; color: ${PALETTE.accent}; font-size: 10px; letter-spacing: 1px; margin-top: 10px; }
+        .card--artist:hover, .card--album:hover, .card--music:hover { transform: translateY(-6px) scale(1.02); }
+
         .card--game { display: block; text-decoration: none; color: inherit; }
         a.card--game { cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease; }
         a.card--game:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 0 34px ${PALETTE.accent}; }
@@ -641,6 +747,10 @@ class ScryerVisionCards extends HTMLElement {
       else if (c.kind === "weather") html.push(withDelay(weatherCard(c)));
       else if (c.kind === "news") html.push(withDelay(newsCard(c)));
       else if (c.kind === "game") html.push(withDelay(gameCard(c)));
+      else if (c.kind === "book") html.push(withDelay(bookCard(c)));
+      else if (c.kind === "music") html.push(withDelay(musicCard(c)));
+      else if (c.kind === "artist") html.push(withDelay(artistCard(c)));
+      else if (c.kind === "album") html.push(withDelay(albumCard(c)));
     }
     if (standingRows.length) html.push(withDelay(standingsCard(standingRows)));
 

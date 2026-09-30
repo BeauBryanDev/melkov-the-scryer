@@ -184,7 +184,7 @@ Model binaries and the book PDFs are not committed.
 | `frontend/public/models/emotieff_b0.onnx` | 8-class facial emotion, runs in the browser | EmotiEffLib (EfficientNet-B0 export) |
 
 In production the emotion model is served from S3 and pointed to with
-`VITE_MODEL_URL`; see [DEPLOY.md](./DEPLOY.md).
+`VITE_MODEL_URL`.
 
 ## Getting started
 
@@ -253,8 +253,9 @@ frontend.
 ```
 app/                      FastAPI backend
   main.py                 routes, rate limits, warm-up
-  prompts/oracle_prompt.py  Asher's personality, guardrails, tool policy
-  services/               oracle_service (agent loop), agent_tools, tts_service,
+  agent/                  Scryer runtime, instructions, and tool registry
+  tools/                  agent-facing tool definitions by domain
+  services/               external/API implementations, tts_service,
                           knowledge / movies / football / weather / news / games services
   schemas/                browser <-> backend contract (incl. the visual cards)
   core/                   config, logging, budget, markdown stripping
@@ -281,8 +282,7 @@ Location is never inferred.
 
 The frontend is a static Vite build on Vercel; the backend runs on an AWS EC2
 VPS behind nginx and HTTPS (systemd, uvicorn with `--proxy-headers`); the
-emotion model is served from S3. The full runbook is in
-[DEPLOY.md](./DEPLOY.md).
+emotion model is served from S3.
 
 ## Status and known limitations
 
