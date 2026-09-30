@@ -1,15 +1,22 @@
-"""Assembly point and dispatcher for Scryer's agent-facing tools."""
 
 import logging
 
 from openai import AsyncOpenAI
 
-from app.tools import football, games, knowledge, movies, news, weather
+from app.tools import ( football, 
+                       games, 
+                       knowledge, 
+                       movies, 
+                       music, 
+                       news, 
+                       books, 
+                       weather )
 
 logger = logging.getLogger("oracle_services")
 
-_DOMAINS = (knowledge, movies, football, weather, news, games)
+_DOMAINS = (knowledge, movies, music, news, weather, games, books, football)
 
+"""Assembly point and dispatcher for Scryer's agent-facing tools."""
 
 def tool_definitions() -> list[dict]:
     """Return configured OpenAI function definitions in stable domain order."""
@@ -28,7 +35,13 @@ async def run_tool(
     for domain in _DOMAINS:
         if name in domain.TOOLS:
             if domain is knowledge:
-                return await domain.run(name, arguments, openai_client)
+                return await domain.run(name, 
+                                        arguments, 
+                                        openai_client
+                                        )
+                
             return await domain.run(name, arguments)
+        
     logger.warning("unknown tool requested: %s", name)
+    
     return "That capability does not exist.", None

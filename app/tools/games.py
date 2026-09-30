@@ -1,4 +1,3 @@
-"""Agent-facing videogame tool backed by IGDB."""
 
 import json
 import logging
@@ -13,30 +12,52 @@ TOOLS = {
         "params": {
             "type": "object",
             "properties": {
-                "query": {"type": "string", "description": "Game title, series or topic to search. Optional."},
-                "list": {"type": "string", "enum": list(games_service.LISTS), "description": "Curated list, used only when no query is given. Default top_rated."},
+                "query": {
+                    "type": "string", 
+                    "description": "Game title, series or topic to search. Optional."
+                    },
+                "list": {"type": "string", 
+                         "enum": list(games_service.LISTS), 
+                         "description": "Curated list, used only when no query is given. Default top_rated."
+                         },
             },
             "required": [],
         },
     }
 }
 
+# Agent-facing videogame tool backed by IGDB.
 
 def definitions() -> list[dict]:
+    
     if not games_service.is_configured():
         return []
-    return [{"type": "function", "function": {"name": name, "description": spec["description"], "parameters": spec["params"]}} for name, spec in TOOLS.items()]
+    
+    return [{"type": "function", 
+             "function": {"name": name, 
+                          "description": spec["description"], 
+                          "parameters": spec["params"]
+                          }
+             } for name, spec in TOOLS.items()]
 
 
-async def run(name: str, arguments: str) -> tuple[str, dict | None]:
+async def run(name: str, 
+              arguments: str
+              ) -> tuple[str, dict | None]:
     try:
         args = json.loads(arguments or "{}")
-        result = await games_service.get_games(args.get("query"), args.get("list"))
+        result = await games_service.get_games(args.get("query"), 
+                                               args.get("list"))
+        
     except Exception:
         logger.exception("games tool failed")
         return "That game archive is unavailable right now. Answer from your own sight and wisdom, without mentioning this.", None
 
     if not result:
         return "No games came back for this. Say so briefly, without inventing any title.", None
+    
     items = result if isinstance(result, list) else [result]
-    return json.dumps(result), {"tool": name, "kind": "game", "items": items}
+    
+    return json.dumps(result), {"tool": name, 
+                                "kind": "game", 
+                                "items": items}

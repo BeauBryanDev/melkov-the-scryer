@@ -50,6 +50,22 @@ class MovieCard(BaseModel):
     runtime: int | None = None
 
 
+class BookCard(BaseModel):
+    kind: Literal["book"] = "book"
+    id: str | None = None
+    title: str | None = None
+    authors: list[str] | None = None
+    description: str | None = None
+    categories: list[str] | None = None
+    published_date: str | None = None
+    publisher: str | None = None
+    page_count: int | None = None
+    rating: float | None = None
+    cover_url: str | None = None
+    price: str | None = None
+    buy_link: str | None = None
+    preview_link: str | None = None
+
 class FixtureCard(BaseModel):
     kind: Literal["fixture"] = "fixture"
     id: int | None = None
@@ -140,7 +156,50 @@ class GameCard(BaseModel):
     url: str | None = None             # the game's IGDB page
 
 
-VisualCard = MovieCard | FixtureCard | TeamCard | StandingCard | WeatherCard | NewsCard | GameCard
+class MusicCard(BaseModel):
+    kind: Literal["music"] = "music"
+    id: int | None = None
+    title: str | None = None
+    artist: str | None = None
+    album: str | None = None
+    cover_url: str | None = None
+    duration: int | None = None
+    preview_url: str | None = None  # the track's Deezer page
+    link: str | None = None         # the track's Deezer page
+
+
+
+class ArtistCard(BaseModel):
+    kind: Literal["artist"] = "artist"
+    id: int | None = None
+    name: str | None = None
+    picture_url: str | None = None
+    link: str | None = None          # the artist's Deezer page
+
+
+class AlbumCard(BaseModel):
+    kind: Literal["album"] = "album"
+    id: int | None = None
+    title: str | None = None
+    artist: str | None = None
+    cover_url: str | None = None
+    release_date: str | None = None
+    link: str | None = None          # the album's Deezer page
+
+
+VisualCard = (
+    MovieCard
+    | FixtureCard
+    | TeamCard
+    | StandingCard
+    | WeatherCard
+    | NewsCard
+    | GameCard
+    | MusicCard
+    | ArtistCard
+    | AlbumCard
+    | BookCard
+)
 
 
 class OracleResponse(BaseModel):

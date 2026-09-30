@@ -1,5 +1,5 @@
-"""Scryer's identity, instructions, and request-context formatting."""
 
+# Scryer's identity, instructions, and request-context formatting.
 # The oracle's soul. Half the magic of the whole project lives here.
 
 SYSTEM_PROMPT = """Your name is Asher. 

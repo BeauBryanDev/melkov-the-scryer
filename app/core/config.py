@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     igdb_cache_ttl: int = 1800  # seconds
     gnews_cache_ttl: int = 3600  # seconds; data is already 12h old on the free plan and quota is tiny
     # API-SPORTS free plan is ~100 requests/day, so every upstream call is cached in memory.
+    google_books_api_key: str = Field("", validation_alias=AliasChoices("GOOGLE_BOOKS_API_KEY"))
+
+    # Google Books API key: https://google.cloud.com/books/docs/overview
     football_cache_ttl: int = 900       # seconds: standings, fixtures by date, team fixtures
     football_static_ttl: int = 86400    # seconds: team info, finished matches (rarely change)
     football_live_ttl: int = 120        # seconds: live fixtures / matches in progress

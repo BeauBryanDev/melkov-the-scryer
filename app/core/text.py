@@ -1,3 +1,4 @@
+
 import html
 import re
 
@@ -15,6 +16,7 @@ _UNDERSCORE_EMPH = re.compile(r"(?<!\w)_+|_+(?!\w)")
 _JSON_FIELD = re.compile(
     r"(?m)^\s*[\"']?(?:url|image|alt|metadata|visual_payload|speech_text)[\"']?\s*:\s*.*$"
 )
+## Avoid Asher to be embarrashed by the visual payload and markdwon syntax.
 
 
 def sanitize_for_speech(text: str) -> str:

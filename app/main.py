@@ -1,3 +1,4 @@
+
 import asyncio
 import logging
 from contextlib import asynccontextmanager
@@ -14,7 +15,7 @@ from app.core.logging import configure_logging
 from app.schemas.oracle import OracleRequest, OracleResponse
 from app.schemas.tts import SpeakRequest
 from app.services import football_service, movies_service
-from app.agent.agent import consult_oracle
+from app.agent.asher import consult_oracle
 from app.services.tts_service import synthesize_speech, warm_up_background
 
 configure_logging()
@@ -69,7 +70,9 @@ async def health() -> dict:
 @limiter.limit(_limits(settings.rate_limit, 
                        settings.rate_limit_daily)
                ) # sentence-level calls need more headroom
-async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
+async def oracle(request: Request, 
+                 body: OracleRequest
+                 ) -> OracleResponse:
     if not try_consume(settings.daily_oracle_budget):
         logger.warning("daily oracle budget spent (%d)", 
                        settings.daily_oracle_budget
@@ -94,7 +97,10 @@ async def oracle(request: Request, body: OracleRequest) -> OracleResponse:
 @limiter.limit(_limits(settings.tts_rate_limit, 
                        settings.tts_rate_limit_daily)
                ) # sentence-level calls need more headroom
-async def speak(request: Request, body: SpeakRequest) -> Response:
+async def speak(request: Request, 
+                body: SpeakRequest
+                ) -> Response:
+    
     try:
         audio = await synthesize_speech(body.text, body.lang)
         

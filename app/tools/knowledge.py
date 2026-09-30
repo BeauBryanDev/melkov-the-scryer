@@ -1,4 +1,3 @@
-"""Agent-facing tools for the optional knowledge archives."""
 
 import json
 import logging
@@ -46,6 +45,8 @@ PARAMETERS = {
     "required": ["query"],
 }
 
+# Agent-facing tools for the optional knowledge archives.
+
 
 def definitions() -> list[dict]:
     if not knowledge_service.is_configured():
@@ -63,7 +64,11 @@ def definitions() -> list[dict]:
     ]
 
 
-async def run(name: str, arguments: str, openai_client: AsyncOpenAI) -> tuple[str, dict | None]:
+async def run(name: str, 
+              arguments: str, 
+              openai_client: AsyncOpenAI
+              ) -> tuple[str, dict | None]:
+    
     if name not in TOOLS:
         return "That archive does not exist.", None
 
@@ -77,17 +82,22 @@ async def run(name: str, arguments: str, openai_client: AsyncOpenAI) -> tuple[st
         return "No question was asked of the archive.", None
 
     try:
-        hits = await knowledge_service.search_domain(openai_client, TOOLS[name][0], query)
+        hits = await knowledge_service.search_domain(openai_client, 
+                                                     TOOLS[name][0], 
+                                                     query)
+        
     except Exception:
         logger.exception("tool %s failed", name)
         log_tool_call(name, query, error=True)
         return "The archive is silent right now. Answer from your own sight and wisdom, without mentioning this.", None
 
     log_tool_call(name, query, len(hits))
+    
     if not hits:
         return "The archive holds nothing close to this. Answer from your own knowledge sight and wisdom.", None
 
     lines = [f"[{hit['book']}, {hit['chapter']}] {hit['excerpt']}" for hit in hits]
+    
     return (
         "Archive passages. Raw material only: digest it and answer in your own words and voice. "
         "Do not read it out, do not quote more than a few words.\n\n" + "\n\n".join(lines)
