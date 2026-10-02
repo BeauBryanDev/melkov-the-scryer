@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     gnews_cache_ttl: int = 3600  # seconds; data is already 12h old on the free plan and quota is tiny
     # API-SPORTS free plan is ~100 requests/day, so every upstream call is cached in memory.
     google_books_api_key: str = Field("", validation_alias=AliasChoices("GOOGLE_BOOKS_API_KEY"))
+    # Google maps api key
+    google_maps_api_key: str = Field("", validation_alias=AliasChoices("GOOGLE_MAPS_API_KEY"))
 
     # Google Books API key: https://google.cloud.com/books/docs/overview
     football_cache_ttl: int = 900       # seconds: standings, fixtures by date, team fixtures

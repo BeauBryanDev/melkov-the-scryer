@@ -10,11 +10,13 @@ from app.tools import ( football,
                        music, 
                        news, 
                        books, 
-                       weather )
+                       weather,
+                       places
+                        )
 
 logger = logging.getLogger("oracle_services")
 
-_DOMAINS = (knowledge, movies, music, news, weather, games, books, football)
+_DOMAINS = (knowledge, movies, music, news, weather, games, books, football, places)
 
 """Assembly point and dispatcher for Scryer's agent-facing tools."""
 

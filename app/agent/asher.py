@@ -14,10 +14,11 @@ from app.schemas.oracle import (
     OracleRequest, OracleResponse,
     StandingCard, TeamCard, VisualCard, 
     WeatherCard, MusicCard, ArtistCard, 
-    AlbumCard, BookCard,
+    AlbumCard, BookCard, PlaceCard,
 )
 
 logger = logging.getLogger("oracle")
+
 # token ids for gpt-4o tokenizer — regenerate if openai_model changees
 _client: AsyncOpenAI | None = None
 NO_MARKDOWN_BIAS = {str(token): -100 for token in (410, 6240, 9, 425, 18204, 1612, 63, 26178, 168394)}
@@ -47,6 +48,7 @@ _CARD_TYPE_BY_TOOL = {
     "search_album": AlbumCard,
     "search_books": BookCard,
     "get_book_details": BookCard,
+    "search_places": PlaceCard,
 }
 
 # Scryer agent runtime and response shaping by the Oracle and GPT-4.

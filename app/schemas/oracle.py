@@ -185,6 +185,16 @@ class AlbumCard(BaseModel):
     cover_url: str | None = None
     release_date: str | None = None
     link: str | None = None          # the album's Deezer page
+    
+
+class PlaceCard(BaseModel):
+    kind: Literal["place"] = "place"
+    name: str | None = None
+    address: str | None = None
+    rating: float | None = None
+    user_ratings_total: int | float | None = None
+    open_now: bool = False
+    maps_url: str | None = None
 
 
 VisualCard = (
@@ -199,6 +209,7 @@ VisualCard = (
     | ArtistCard
     | AlbumCard
     | BookCard
+    | PlaceCard
 )
 
 
