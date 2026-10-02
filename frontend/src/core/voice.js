@@ -6,6 +6,7 @@ const BACKEND = (import.meta.env.VITE_BACKEND_URL ||"http://localhost:8001" || "
 const CONFIG = {
   BACKEND_URL: `${BACKEND}/api/v1/oracle`,
   TTS_URL: `${BACKEND}/api/v1/speak`,   // server-side TTS (Piper)
+  HEALTH_URL: `${BACKEND}/health`,
 
   STT_ENGINE: "webspeech",      // "webspeech" | "whisper"
   WHISPER_MODEL: "onnx-community/whisper-base",
@@ -29,6 +30,7 @@ let busy = false;
 let audioCtx = null;
  
 let ttsReady = false;
+let healthTimer = null;
 
 const micViz = { anim: 0, analyser: null, stream: null, ownsStream: false };
 
@@ -126,6 +128,8 @@ function setLanguage(lang) {
  
 export async function bootVoice() {
   buildUI();
+  checkBackendHealth();
+  healthTimer = setInterval(checkBackendHealth, 10000);
   setStatus("SUMMONING VOICE...");
  
   // TTS now runs server-side (OpenAI via /api/v1/speak); nothing to load in
@@ -498,6 +502,7 @@ function buildUI() {
   const wrap = document.createElement("div");
   wrap.id = "voice-panel";
   wrap.innerHTML = `
+    <div id="backend-status" class="backend-status" data-state="offline" role="status" aria-live="polite"><span class="backend-state">[OFFLINE]</span><span class="backend-message">ASHER IS OFF</span></div>
     <div id="voice-langs" role="group" aria-label="Language / Idioma / Langue">
       ${Object.entries(LANGS).map(([code, l]) =>
         `<button type="button" class="voice-lang-btn" data-lang="${code}" aria-pressed="false">${l.label}</button>`).join("")}
@@ -519,6 +524,14 @@ function buildUI() {
       position: fixed; right: 28px; bottom: 28px; text-align: right; display: flex; flex-direction: column; align-items: flex-end;
       font-family: "Courier New", monospace; letter-spacing: 2px; z-index: 5;
     }
+    .backend-status {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+      margin-bottom: 12px; font-weight: bold; text-shadow: 0 0 12px currentColor;
+    }
+    .backend-state { font-size: 24px; letter-spacing: 4px; line-height: 1; }
+    .backend-message { font-size: 13px; letter-spacing: 2px; line-height: 1; }
+    .backend-status[data-state="online"] { color: #55e878; }
+    .backend-status[data-state="offline"] { color: #ff5264; }
     #voice-langs { display: inline-flex; margin-bottom: 14px; border: 1px solid rgba(53,224,242,0.5);
       background: rgba(5,7,10,0.7); backdrop-filter: blur(6px); }
     .voice-lang-btn {
@@ -575,6 +588,38 @@ function buildUI() {
  
 function setStatus(msg) {
   if (ui.status) ui.status.textContent = msg;
+}
+
+async function checkBackendHealth() {
+  const badge = document.getElementById("backend-status");
+  if (!badge) return;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  try {
+    const res = await fetch(CONFIG.HEALTH_URL, {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    const online = res.ok;
+    if (online) {
+      const data = await res.json().catch(() => ({}));
+      const message = typeof data.status === "string" ? data.status.toUpperCase() : "THE EYE IS OPEN";
+      badge.dataset.state = "online";
+      badge.querySelector(".backend-state").textContent = "[ONLINE]";
+      badge.querySelector(".backend-message").textContent = message;
+    } else {
+      badge.dataset.state = "offline";
+      badge.querySelector(".backend-state").textContent = "[OFFLINE]";
+      badge.querySelector(".backend-message").textContent = "ASHER IS OFF";
+    }
+  } catch {
+    badge.dataset.state = "offline";
+    badge.querySelector(".backend-state").textContent = "[OFFLINE]";
+    badge.querySelector(".backend-message").textContent = "ASHER IS OFF";
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function showSubtitle(text) {

@@ -562,12 +562,12 @@ class ScryerVisionCards extends HTMLElement {
           background: rgba(53,224,242,0.06);
         }
         .card--place .body { padding: 18px 16px; min-width: 0; }
-        .card--place h3 { color: ${PALETTE.text}; font-size: 15px; line-height: 1.35; margin-bottom: 8px; }
-        .place-address { color: rgba(230,251,255,0.75); font-size: 11px; line-height: 1.45; margin-bottom: 12px; }
-        .place-facts { display: flex; flex-wrap: wrap; gap: 5px 10px; color: ${PALETTE.textDim}; font-size: 10px; line-height: 1.4; }
+        .card--place h3 { color: ${PALETTE.text}; font-size: 17px; line-height: 1.35; margin-bottom: 8px; }
+        .place-address { color: rgba(230,251,255,0.75); font-size: 12px; line-height: 1.45; margin-bottom: 12px; }
+        .place-facts { display: flex; flex-wrap: wrap; gap: 5px 10px; color: ${PALETTE.textDim}; font-size: 11px; line-height: 1.4; }
         .place-rating, .place-status--open { color: ${PALETTE.accent}; }
         .place-status { letter-spacing: 1px; }
-        .place-link { display: inline-block; color: ${PALETTE.accent}; font-size: 10px; letter-spacing: 1px; margin-top: 16px; }
+        .place-link { display: inline-block; color: ${PALETTE.accent}; font-size: 11px; letter-spacing: 1px; margin-top: 16px; }
 
         .card--book { width: 290px; display: block; }
         .book-cover { width: 100%; height: 300px; object-fit: cover; display: block; }
