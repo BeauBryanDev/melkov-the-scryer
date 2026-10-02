@@ -168,7 +168,6 @@ class MusicCard(BaseModel):
     link: str | None = None         # the track's Deezer page
 
 
-
 class ArtistCard(BaseModel):
     kind: Literal["artist"] = "artist"
     id: int | None = None
@@ -185,6 +184,13 @@ class AlbumCard(BaseModel):
     cover_url: str | None = None
     release_date: str | None = None
     link: str | None = None          # the album's Deezer page
+    
+    
+class FibonacciCard(BaseModel):
+    kind: Literal["fibonacci"] = "fibonacci"
+    n: int | None = None
+    value: int | None = None
+    sequence: list[int] | None = None
     
 
 class PlaceCard(BaseModel):
@@ -208,6 +214,7 @@ VisualCard = (
     | MusicCard
     | ArtistCard
     | AlbumCard
+    | FibonacciCard
     | BookCard
     | PlaceCard
 )

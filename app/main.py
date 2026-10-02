@@ -16,6 +16,7 @@ from app.schemas.oracle import OracleRequest, OracleResponse
 from app.schemas.tts import SpeakRequest
 from app.services import football_service, movies_service
 from app.agent.asher import consult_oracle
+import app.services.places_service as places_service
 from app.services.tts_service import synthesize_speech, warm_up_background
 
 configure_logging()
@@ -63,7 +64,7 @@ app.add_middleware(
 
 @app.get("/health")
 async def health() -> dict:
-    return {"status": "the eye is open"}
+    return {"status": "the eye is open" if places_service.is_configured() else "the eye is closed"}
 
 
 @app.post("/api/v1/oracle", response_model=OracleResponse)

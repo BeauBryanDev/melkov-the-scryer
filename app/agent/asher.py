@@ -10,11 +10,14 @@ from app.agent.oracle_services import run_tool, tool_definitions
 from app.core.config import get_settings
 from app.core.text import sanitize_for_speech
 from app.schemas.oracle import (
-    FixtureCard, GameCard, MovieCard, NewsCard, 
+    FixtureCard, GameCard,
+    MovieCard, NewsCard, 
     OracleRequest, OracleResponse,
-    StandingCard, TeamCard, VisualCard, 
-    WeatherCard, MusicCard, ArtistCard, 
-    AlbumCard, BookCard, PlaceCard,
+    StandingCard, TeamCard, 
+    VisualCard, WeatherCard ,
+    MusicCard, ArtistCard, 
+    AlbumCard, BookCard, 
+    PlaceCard, FibonacciCard
 )
 
 logger = logging.getLogger("oracle")
@@ -48,6 +51,7 @@ _CARD_TYPE_BY_TOOL = {
     "search_album": AlbumCard,
     "search_books": BookCard,
     "get_book_details": BookCard,
+    "get_fibonacci": FibonacciCard,
     "search_places": PlaceCard,
 }
 

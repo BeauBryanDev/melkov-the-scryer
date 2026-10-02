@@ -10,13 +10,14 @@ from app.tools import ( football,
                        music, 
                        news, 
                        books, 
+                       fibonacci,
                        weather,
                        places
                         )
 
 logger = logging.getLogger("oracle_services")
 
-_DOMAINS = (knowledge, movies, music, news, weather, games, books, football, places)
+_DOMAINS = (knowledge, movies, music, news, weather, games, books, fibonacci, football, places)
 
 """Assembly point and dispatcher for Scryer's agent-facing tools."""
 
@@ -25,6 +26,7 @@ def tool_definitions() -> list[dict]:
     definitions: list[dict] = []
     for domain in _DOMAINS:
         definitions.extend(domain.definitions())
+        
     return definitions
 
 

@@ -1,7 +1,8 @@
 
 from functools import lru_cache
  
-MAX_N = 500  # well under Python's default recursion limit (1000)
+MAX_N = 500  
+# well under Python's default recursion limit (1000)
  
  
 @lru_cache(maxsize=None)
