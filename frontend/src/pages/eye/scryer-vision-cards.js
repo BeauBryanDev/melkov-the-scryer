@@ -1,6 +1,6 @@
 /*  
    SCRYER-VISION-CARDS — custom element
-   Renders Asher's leisure-tool results (movies, football fixtures/
+   Renders Asher's leisure-tool results (movies, places, football fixtures/
    teams/standings) as a floating carousel of dark, cyan-glow cards —
    "a vision projected in the mirror." Fed by voice.js after an
    /api/v1/oracle reply carries a visual_payload.
@@ -205,6 +205,30 @@ function weatherCard(c) {
       <p class="meta">feels ${c.feels_like != null ? esc(Math.round(c.feels_like)) : "–"}° · humidity ${esc(c.humidity ?? "–")}% · wind ${c.wind_kmh != null ? esc(Math.round(c.wind_kmh)) : "–"} km/h</p>
       <div class="wx-days">${days}</div>
     </div>`;
+}
+
+function placeCard(c) {
+  const url = safeUrl(c.maps_url);
+  const rating = typeof c.rating === "number" ? `★ ${c.rating.toFixed(1)}` : "";
+  const reviews = typeof c.user_ratings_total === "number"
+    ? `${c.user_ratings_total.toLocaleString()} reviews`
+    : "";
+  const status = c.open_now == null ? "" : c.open_now ? "OPEN NOW" : "CLOSED NOW";
+  const body = `
+    <div class="place-mark" aria-hidden="true">⌖</div>
+    <div class="body">
+      <h3>${esc(c.name)}</h3>
+      ${c.address ? `<p class="place-address">${esc(c.address)}</p>` : ""}
+      <div class="place-facts">
+        ${rating ? `<span class="place-rating">${rating}</span>` : ""}
+        ${reviews ? `<span>${esc(reviews)}</span>` : ""}
+        ${status ? `<span class="place-status ${c.open_now ? "place-status--open" : ""}">${status}</span>` : ""}
+      </div>
+      ${url ? `<span class="place-link">OPEN IN MAPS ↗</span>` : ""}
+    </div>`;
+  return url
+    ? `<a class="card card--place" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${body}</a>`
+    : `<div class="card card--place">${body}</div>`;
 }
 
 function timeAgo(iso) {
@@ -530,6 +554,21 @@ class ScryerVisionCards extends HTMLElement {
         .card--weather .wx-cond { text-transform: capitalize; color: ${PALETTE.textDim}; }
         .card--weather .wx-rain { text-align: right; color: ${PALETTE.accent}; }
 
+        .card--place { width: 280px; min-height: 178px; display: flex; color: inherit; text-decoration: none; }
+        .card--place:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 0 34px ${PALETTE.accent}; }
+        .card--place .place-mark {
+          display: flex; align-items: center; justify-content: center; flex: 0 0 58px;
+          color: ${PALETTE.accent}; font-size: 34px; border-right: 1px solid ${PALETTE.border};
+          background: rgba(53,224,242,0.06);
+        }
+        .card--place .body { padding: 18px 16px; min-width: 0; }
+        .card--place h3 { color: ${PALETTE.text}; font-size: 15px; line-height: 1.35; margin-bottom: 8px; }
+        .place-address { color: rgba(230,251,255,0.75); font-size: 11px; line-height: 1.45; margin-bottom: 12px; }
+        .place-facts { display: flex; flex-wrap: wrap; gap: 5px 10px; color: ${PALETTE.textDim}; font-size: 10px; line-height: 1.4; }
+        .place-rating, .place-status--open { color: ${PALETTE.accent}; }
+        .place-status { letter-spacing: 1px; }
+        .place-link { display: inline-block; color: ${PALETTE.accent}; font-size: 10px; letter-spacing: 1px; margin-top: 16px; }
+
         .card--book { width: 290px; display: block; }
         .book-cover { width: 100%; height: 300px; object-fit: cover; display: block; }
         .book-cover--none { display: flex; align-items: center; justify-content: center; color: ${PALETTE.textDim}; background: rgba(139,233,253,0.06); font-size: 11px; letter-spacing: 2px; }
@@ -745,6 +784,7 @@ class ScryerVisionCards extends HTMLElement {
       else if (c.kind === "fixture") html.push(withDelay(fixtureCard(c)));
       else if (c.kind === "team") html.push(withDelay(teamCard(c)));
       else if (c.kind === "weather") html.push(withDelay(weatherCard(c)));
+      else if (c.kind === "place") html.push(withDelay(placeCard(c)));
       else if (c.kind === "news") html.push(withDelay(newsCard(c)));
       else if (c.kind === "game") html.push(withDelay(gameCard(c)));
       else if (c.kind === "book") html.push(withDelay(bookCard(c)));
