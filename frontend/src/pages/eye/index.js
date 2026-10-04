@@ -17,10 +17,11 @@
 import { createRenderer } from "./renderer.js";
 import { buildHUD, updateHUD, getAudioChart } from "./hud.js";
 import { fuseAndSmooth } from "@/core/fusion.js";
-import { attachAudioVisualizer, attachFibonacciCard, attachVisionCards } from "@/core/voice.js";
+import { attachAudioVisualizer, attachFibonacciCard, attachVisionCards, attachKnowledgeSources } from "@/core/voice.js";
 import "./scryer-audio-chart.js";
 import "./scryer-vision-cards.js";
 import "./fibonacci-card.js";
+import "./scryer-knowledge-source.js";
 import "./eye.css";
 
 export default {
@@ -37,6 +38,7 @@ export default {
       <canvas id="glcanvas"></canvas>
       <scryer-vision-cards></scryer-vision-cards>
       <scryer-fibonacci-card></scryer-fibonacci-card>
+      <scryer-knowledge-source></scryer-knowledge-source>
     `;
     buildHUD(container);
     attachAudioVisualizer(getAudioChart());
@@ -44,8 +46,10 @@ export default {
     this.canvas = container.querySelector("#glcanvas");
     const visionEl = container.querySelector("scryer-vision-cards");
     const fibonacciEl = container.querySelector("scryer-fibonacci-card");
+    const knowledgeEl = container.querySelector("scryer-knowledge-source");
     attachVisionCards(visionEl);
     attachFibonacciCard(fibonacciEl);
+    attachKnowledgeSources(knowledgeEl);
 
     // The vision is a projection in place of the eye: hide the burning eye
     // while a vision is shown, restore it once dismissed.
@@ -79,6 +83,7 @@ export default {
     attachAudioVisualizer(null);
     attachVisionCards(null);
     attachFibonacciCard(null);
+    attachKnowledgeSources(null);
     this.canvas = null;
     this.onVisionShow = null;
     this.onVisionHide = null;

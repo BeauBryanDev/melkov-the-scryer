@@ -94,6 +94,11 @@ export function attachVisionCards(el) {
 }
 
 let fibonacciCard = null;
+let knowledgeSources = null;
+
+export function attachKnowledgeSources(el) {
+  knowledgeSources = el;
+}
 
 export function attachFibonacciCard(el) {
   fibonacciCard = el;
@@ -191,6 +196,7 @@ async function consult(userText) {
   const t0 = performance.now();
   visionCards?.hide?.();   // clear any vision left over from the previous turn
   fibonacciCard?.hide?.();
+  knowledgeSources?.hide?.();
   try {
     const res = await fetch(CONFIG.BACKEND_URL, {
       method: "POST",
@@ -229,6 +235,7 @@ async function consult(userText) {
  
     window.Scryer?.setMood?.(data.mood_hint);
     showSubtitle(data.reply);                       // the reply always appears
+    knowledgeSources?.show?.(data.knowledge_sources);
     if (data.visual_payload?.length) {
       const fibonacci = data.visual_payload.filter((card) => card.kind === "fibonacci");
       const otherCards = data.visual_payload.filter((card) => card.kind !== "fibonacci");
