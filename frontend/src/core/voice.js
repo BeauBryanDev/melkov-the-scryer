@@ -93,6 +93,12 @@ export function attachVisionCards(el) {
   visionCards = el;
 }
 
+let fibonacciCard = null;
+
+export function attachFibonacciCard(el) {
+  fibonacciCard = el;
+}
+
 const LANGS = {
   en: { webspeech: "en-US", whisper: "english", label: "EN" },
   es: { webspeech: "es-ES", whisper: "spanish", label: "ES" },   // Spain
@@ -184,6 +190,7 @@ async function consult(userText) {
   const telemetry = sanitizeTelemetry(window.Scryer?.getTelemetry?.());
   const t0 = performance.now();
   visionCards?.hide?.();   // clear any vision left over from the previous turn
+  fibonacciCard?.hide?.();
   try {
     const res = await fetch(CONFIG.BACKEND_URL, {
       method: "POST",
@@ -222,7 +229,12 @@ async function consult(userText) {
  
     window.Scryer?.setMood?.(data.mood_hint);
     showSubtitle(data.reply);                       // the reply always appears
-    if (data.visual_payload?.length) visionCards?.show?.(data.visual_payload);
+    if (data.visual_payload?.length) {
+      const fibonacci = data.visual_payload.filter((card) => card.kind === "fibonacci");
+      const otherCards = data.visual_payload.filter((card) => card.kind !== "fibonacci");
+      if (otherCards.length) visionCards?.show?.(otherCards);
+      if (fibonacci.length) fibonacciCard?.show?.(fibonacci);
+    }
     if (ttsReady) {
       setStatus("THE MIRROR SPEAKS");
       const speechText = data.speech_text || data.reply; // old backends remain compatible
