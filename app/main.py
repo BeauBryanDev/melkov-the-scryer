@@ -64,7 +64,7 @@ app.add_middleware(
 
 @app.get("/health")
 async def health() -> dict:
-    return {"status": "the eye is open" if places_service.is_configured() else "the eye is closed"}
+    return {"status": "Asher is open" if places_service.is_configured() else "Asher is closed"}
 
 
 @app.post("/api/v1/oracle", response_model=OracleResponse)
@@ -107,7 +107,8 @@ async def speak(request: Request,
         
     except Exception:
         logger.exception("tts synthesis failed")
-        raise HTTPException(status_code=502, detail="The mirror's voice fails.")
+        raise HTTPException(status_code=502, 
+                            detail="The mirror's voice fails.")
 
     return Response(
         content=audio,
@@ -122,14 +123,16 @@ async def speak(request: Request,
 async def movie_detail(request: Request, movie_id: int) -> dict:
     """Detail panel for a movie card the user clicked (cast, trailer, recommendations)."""
     if not movies_service.is_configured():
-        raise HTTPException(status_code=503, detail="The archive of films is closed.")
+        raise HTTPException(status_code=503, 
+                            detail="The archive of films is closed.")
     
     try:
         return await movies_service.get_movie_full(movie_id)
     
     except Exception:
         logger.exception("movie detail failed (id=%s)", movie_id)
-        raise HTTPException(status_code=502, detail="The vision fades.")
+        raise HTTPException(status_code=502, 
+                            detail="The vision fades.")
 
 
 @app.get("/api/v1/football/team/{team_id}")
@@ -150,11 +153,13 @@ async def football_team(request: Request,
         return await football_service.get_team_panel(team_id, league, season)
     
     except LookupError:
-        raise HTTPException(status_code=404, detail="The mirror knows no such team.")
+        raise HTTPException(status_code=404, 
+                            detail="The mirror knows no such team.")
     
     except Exception:
         logger.exception("football team panel failed (id=%s)", team_id)
-        raise HTTPException(status_code=502, detail="The vision fades.")
+        raise HTTPException(status_code=502, 
+                            detail="The vision fades.")
 
 
 @app.get("/api/v1/football/fixture/{fixture_id}")
@@ -166,14 +171,17 @@ async def football_fixture(request: Request,
                            ) -> dict:
     """Match panel for a fixture card the user clicked (events, lineups, stats). Cached."""
     if not football_service.is_configured():
-        raise HTTPException(status_code=503, detail="The archive of matches is closed.")
+        raise HTTPException(status_code=503, 
+                            detail="The archive of matches is closed.")
     
     try:
         return await football_service.get_fixture_detail(fixture_id)
     
     except LookupError:
-        raise HTTPException(status_code=404, detail="The mirror knows no such match.")
+        raise HTTPException(status_code=404, 
+                            detail="The mirror knows no such match.")
     
     except Exception:
         logger.exception("football fixture panel failed (id=%s)", fixture_id)
-        raise HTTPException(status_code=502, detail="The vision fades.")
+        raise HTTPException(status_code=502, 
+                            detail="The vision fades.")

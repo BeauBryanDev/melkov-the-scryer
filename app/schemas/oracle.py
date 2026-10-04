@@ -220,6 +220,15 @@ VisualCard = (
 )
 
 
+class KnowledgeSource(BaseModel):
+    """Provenance for a passage retrieved from the book archive."""
+    book: str
+    chapter: str
+    chunk_index: int | None = None
+    start_page: int | None = None
+    author: str | None = None
+
+
 class OracleResponse(BaseModel):
     reply: str
     # Speech-safe representation of reply. Kept separate from the visual text
@@ -227,6 +236,7 @@ class OracleResponse(BaseModel):
     speech_text: str | None = None
     mood_hint: str  # one word the client may use to tint the eye  
     tools_used: list[str] = Field(default_factory=list)  # archives Asher consulted this turn (empty = none)
+    knowledge_sources: list[KnowledgeSource] | None = None
     # Structured leisure-tool results (movies/football) for the frontend to render as
     # floating "mirror vision" cards. None = nothing to show this turn.
     visual_payload: list[VisualCard] | None = None

@@ -15,7 +15,8 @@ from app.schemas.oracle import (
     OracleRequest, OracleResponse,
     StandingCard, TeamCard, 
     VisualCard, WeatherCard ,
-    MusicCard, ArtistCard, 
+    MusicCard, ArtistCard,
+    KnowledgeSource,
     AlbumCard, BookCard, 
     PlaceCard, FibonacciCard
 )
@@ -107,6 +108,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
     client = get_client()
     tools_used: list[str] = []
     visual_cards: list[VisualCard] = []
+    knowledge_sources: list[KnowledgeSource] = []
     reply = ""
     
     try:
@@ -157,7 +159,14 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
                     )
                 
                 if visual is not None:
-                    visual_cards.extend(_cards_from_payload(visual))
+                    if visual.get("kind") == "knowledge_sources":
+                        for source in visual.get("items", []):
+                            try:
+                                knowledge_sources.append(KnowledgeSource(**source))
+                            except Exception:
+                                logger.exception("failed to build knowledge source")
+                    else:
+                        visual_cards.extend(_cards_from_payload(visual))
                     
             logger.info("asher consulted: %s", ", ".join(tc.function.name for tc in calls))
             
@@ -166,8 +175,9 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
         reply = "The oracle is silent right now. inner error , speak back later."
         tools_used = []
         visual_cards = []
+        knowledge_sources = []
 
-    logger.info("oracle reply generated (%d chars, tools=%d)", 
+    logger.info("oracle reply generated (%d chars, tools=%d)",
                 len(reply), len(tools_used)
                 )
     
@@ -176,6 +186,7 @@ async def consult_oracle(req: OracleRequest) -> OracleResponse:
         speech_text=sanitize_for_speech(reply),
         mood_hint=MOOD_HINTS.get(req.telemetry.dominant_state, "silver"),
         tools_used=tools_used,
+        knowledge_sources=knowledge_sources or None,
         visual_payload=visual_cards or None,
     )
 
