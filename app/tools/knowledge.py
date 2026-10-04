@@ -96,9 +96,32 @@ async def run(name: str,
     if not hits:
         return "The archive holds nothing close to this. Answer from your own knowledge sight and wisdom.", None
 
-    lines = [f"[{hit['book']}, {hit['chapter']}] {hit['excerpt']}" for hit in hits]
+    # Provenance is included in the tool context so Asher knows exactly which
+    # retrieved passage each excerpt came from. The structured source records
+    # returned alongside this text are collected by the agent for the API
+    # response; the excerpt text remains unchanged for Asher.
+    def format_source(hit: dict) -> str:
+        location = [hit["book"], hit["chapter"]]
+        if hit.get("chunk_index") is not None:
+            location.append(f"chunk {int(hit['chunk_index']) + 1}")
+        if hit.get("start_page") is not None:
+            location.append(f"page {hit['start_page']}")
+        return ", ".join(location)
+
+    lines = [f"[{format_source(hit)}] {hit['excerpt']}" for hit in hits]
     
+    source_items = [
+        {
+            "book": hit["book"],
+            "chapter": hit["chapter"],
+            "chunk_index": hit.get("chunk_index"),
+            "start_page": hit.get("start_page"),
+            "author": hit.get("author"),
+        }
+        for hit in hits
+    ]
+
     return (
         "Archive passages. Raw material only: digest it and answer in your own words and voice. "
         "Do not read it out, do not quote more than a few words.\n\n" + "\n\n".join(lines)
-    ), None
+    ), {"kind": "knowledge_sources", "items": source_items}

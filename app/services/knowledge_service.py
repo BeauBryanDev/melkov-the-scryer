@@ -72,9 +72,16 @@ async def search_domain(openai_client: AsyncOpenAI,
     )
     return [
         {
-            "book": p.payload["book"],
-            "chapter": p.payload["chapter"],
-            "excerpt": _excerpt(p.payload["text"], 
+            # Keep the provenance fields from build_rag_collection.ipynb
+            # attached to every hit. The agent currently uses only the
+            # excerpt, but the response layer will use these fields later to
+            # show the source in the Eye without re-querying Qdrant.
+            "book": p.payload.get("book", "Unknown book"),
+            "chapter": p.payload.get("chapter", "Unknown chapter"),
+            "chunk_index": p.payload.get("chunk_index"),
+            "start_page": p.payload.get("start_page"),
+            "author": p.payload.get("author"),
+            "excerpt": _excerpt(p.payload.get("text", ""),
                                 s.rag_snippet_chars),
         }
         for p in res.points
