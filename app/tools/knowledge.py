@@ -9,7 +9,8 @@ from app.services import knowledge_service
 
 logger = logging.getLogger("agent_tools.knowledge")
 
-TOOLS: dict[str, tuple[str, str]] = {
+# { "sub_knw_tool":( "parameter, "description")}
+TOOLS: dict[str, tuple[str, str]] = {  
     "search_mindfulness_knowledge": (
         "mindfulness",
         "Consult the meditation archive (Mindfulness in Plain English). Use when the person wants to meditate, "
@@ -51,6 +52,7 @@ PARAMETERS = {
 def definitions() -> list[dict]:
     if not knowledge_service.is_configured():
         return []
+    
     return [
         {
             "type": "function",
@@ -74,6 +76,7 @@ async def run(name: str,
 
     try:
         query = str(json.loads(arguments or "{}").get("query", "")).strip()
+        
     except Exception:
         query = ""
 

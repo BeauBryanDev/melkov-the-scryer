@@ -1,0 +1,1012 @@
+[
+  {
+    "id": "P01",
+    "question": "Is it better for a leader to be loved or to be feared?",
+    "style": "book",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XVII: Concerning Cruelty And Clemency, And Whether It Is Better To Be Loved Than Feared",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Greene quotes this passage in 48 Laws too - a 48 Laws hit is a fair answer but a Prince miss."
+  },
+  {
+    "id": "P02",
+    "question": "My team likes me, but nobody takes my deadlines seriously. Should I be nicer or stricter with them?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XVII: Concerning Cruelty And Clemency, And Whether It Is Better To Be Loved Than Feared",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Pair of P01."
+  },
+  {
+    "id": "P03",
+    "question": "Should a ruler keep his word when breaking it would be to his advantage?",
+    "style": "book",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XVIII: Concerning The Way In Which Princes Should Keep Faith",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Fox and lion."
+  },
+  {
+    "id": "P04",
+    "question": "I made a promise to my business partner, but things changed and now keeping it hurts me. Do I have to keep it?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XVIII: Concerning The Way In Which Princes Should Keep Faith",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Pair of P03."
+  },
+  {
+    "id": "P05",
+    "question": "How much of our life is ruled by fortune, and how much by our own free will?",
+    "style": "book",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXV: What Fortune Can Effect In Human Affairs, And How To Withstand Her",
+        "chunk_index": 0
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXV: What Fortune Can Effect In Human Affairs, And How To Withstand Her",
+        "chunk_index": 4
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Fortune as a flooding river."
+  },
+  {
+    "id": "P06",
+    "question": "I feel like luck decides everything in my life. Is there even any point in making plans?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXV: What Fortune Can Effect In Human Affairs, And How To Withstand Her",
+        "chunk_index": 0
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXV: What Fortune Can Effect In Human Affairs, And How To Withstand Her",
+        "chunk_index": 4
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Pair of P05. Competes with Law 29 (plan to the end)."
+  },
+  {
+    "id": "P07",
+    "question": "How can a prince protect himself from the flatterers in his court?",
+    "style": "book",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXIII: How Flatterers Should Be Avoided",
+        "chunk_index": 0
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXIII: How Flatterers Should Be Avoided",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "P08",
+    "question": "Everyone around me just tells me what I want to hear since I became the manager. How do I get honest advice?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXIII: How Flatterers Should Be Avoided",
+        "chunk_index": 0
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER XXIII: How Flatterers Should Be Avoided",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Pair of P07."
+  },
+  {
+    "id": "P09",
+    "question": "Should cruelties and injuries be inflicted all at once, while benefits are given little by little?",
+    "style": "book",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 5
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 6
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 7
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "P10",
+    "question": "I have to make big unpopular cuts at work. Is it better to do them all at once or bit by bit?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Prince",
+    "relevant_chunks": [
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 5
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 6
+      },
+      {
+        "book": "The Prince",
+        "chapter": "CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness",
+        "chunk_index": 7
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Pair of P09."
+  },
+  {
+    "id": "L01",
+    "question": "My boss gets cold with me whenever I shine in meetings. Should I hold back my talent?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 17
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 1: NEVER OUTSHINE THE MASTER",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 1. Body is mislabelled 'Preface'."
+  },
+  {
+    "id": "L02",
+    "question": "I talk way too much in negotiations and I think it weakens me. Should I say less?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 84
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 85
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 4: ALWAYS SAY LESS THAN NECESSARY",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 4."
+  },
+  {
+    "id": "L03",
+    "question": "Should I hire my close friend or someone I used to compete against?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 30
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 2: NEVER PUT TOO MUCH TRUST IN FRIENDS, LEARN HOW TO USE ENEMIES",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 2."
+  },
+  {
+    "id": "L04",
+    "question": "A rival tried to ruin me and failed. Should I forgive him or finish this for good?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 251
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Preface",
+        "chunk_index": 252
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 15: CRUSH YOUR ENEMY TOTALLY",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 15. Adversarial: Asher's safety tone matters online."
+  },
+  {
+    "id": "L05",
+    "question": "People at work have started taking me for granted. Would stepping back for a while help?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 16: USE ABSENCE TO INCREASE RESPECT AND HONOR",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 16. Only the summary chunk is located; body is somewhere in 'Preface'."
+  },
+  {
+    "id": "L06",
+    "question": "I hesitate before every big decision. Is it better to act boldly even if I might be wrong?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 27: PLAY ON PEOPLE'S NEED TO BELIEVE TO CREATE A CULTLIKE FOLLOWING",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [
+      "Law 28: ENTER ACTION WITH BOLDNESS"
+    ],
+    "notes": "Law 28. Any Law 28 chunk counts."
+  },
+  {
+    "id": "L07",
+    "question": "How do I find someone's weak spot so I can get them to cooperate with me?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 27: PLAY ON PEOPLE'S NEED TO BELIEVE TO CREATE A CULTLIKE FOLLOWING",
+        "chunk_index": 1
+      },
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 27: PLAY ON PEOPLE'S NEED TO BELIEVE TO CREATE A CULTLIKE FOLLOWING",
+        "chunk_index": 2
+      }
+    ],
+    "relevant_chapters": [
+      "Law 33: DISCOVER EACH MAN'S THUMBSCREW"
+    ],
+    "notes": "Law 33. Manipulative - check Asher's tone online."
+  },
+  {
+    "id": "L08",
+    "question": "Someone at work is spreading a rumor about me. How do I protect my reputation?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 5: SO MUCH DEPENDS ON REPUTATIONGUARD IT WITH YOUR LIFE",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Law 5."
+  },
+  {
+    "id": "L09",
+    "question": "I just won a big promotion. How do I avoid ruining it by pushing too far?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 27: PLAY ON PEOPLE'S NEED TO BELIEVE TO CREATE A CULTLIKE FOLLOWING",
+        "chunk_index": 6
+      }
+    ],
+    "relevant_chapters": [
+      "Law 47: DO NOT GO PAST THE MARK YOU AIMED FOR; IN VICTORY, LEARN WHEN TO STOP"
+    ],
+    "notes": "Law 47."
+  },
+  {
+    "id": "L10",
+    "question": "My colleagues seem jealous because everything I do goes well. What should I do?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The 48 Laws of Power",
+    "relevant_chunks": [
+      {
+        "book": "The 48 Laws of Power",
+        "chapter": "Law 27: PLAY ON PEOPLE'S NEED TO BELIEVE TO CREATE A CULTLIKE FOLLOWING",
+        "chunk_index": 6
+      }
+    ],
+    "relevant_chapters": [
+      "Law 46: NEVER APPEAR TOO PERFECT"
+    ],
+    "notes": "Law 46."
+  },
+  {
+    "id": "A01",
+    "question": "How can I beat a competitor without getting into a direct fight with them?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter III: Attack by Stratagem",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Win without fighting."
+  },
+  {
+    "id": "A02",
+    "question": "Before a big negotiation, what do I need to know about myself and the other side?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter III: Attack by Stratagem",
+        "chunk_index": 2
+      },
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter X: Terrain",
+        "chunk_index": 4
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Know the enemy and know yourself."
+  },
+  {
+    "id": "A03",
+    "question": "Should I show my competitors my real plans or keep them guessing?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter I: Laying Plans",
+        "chunk_index": 1
+      },
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter I: Laying Plans",
+        "chunk_index": 2
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Deception. Competes with Law 3 (conceal your intentions)."
+  },
+  {
+    "id": "A04",
+    "question": "My rival is much stronger than me overall. Where should I focus my effort against him?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter VI: Weak Points and Strong",
+        "chunk_index": 3
+      },
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter VI: Weak Points and Strong",
+        "chunk_index": 4
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Avoid the strong, strike the weak; like water."
+  },
+  {
+    "id": "A05",
+    "question": "My opponent has a really short temper. How can I use that?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter I: Laying Plans",
+        "chunk_index": 2
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Choleric temper, irritate him."
+  },
+  {
+    "id": "A06",
+    "question": "I'm backed into a corner with no way out. How should I fight?",
+    "style": "plain",
+    "domain": "life_strategy",
+    "expected_tool": "search_life_strategy_knowledge",
+    "book": "The Art of War",
+    "relevant_chunks": [
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter XI: The Nine Situations",
+        "chunk_index": 0
+      },
+      {
+        "book": "The Art of War",
+        "chapter": "Chapter XI: The Nine Situations",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Desperate ground."
+  },
+  {
+    "id": "M01",
+    "question": "I keep getting sleepy every time I meditate. What can I do?",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 11
+      },
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 12
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Drowsiness."
+  },
+  {
+    "id": "M02",
+    "question": "My knees and back hurt when I sit to meditate. Should I stop?",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 4
+      },
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 5
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Physical pain."
+  },
+  {
+    "id": "M03",
+    "question": "Meditation is so boring. How do I keep going?",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 14
+      },
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 10: Dealing with Problems",
+        "chunk_index": 15
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Boredom."
+  },
+  {
+    "id": "M04",
+    "question": "Is meditation just a way of going into a trance?",
+    "style": "book",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 2: What Meditation Isn’t",
+        "chunk_index": 3
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Misconception 2."
+  },
+  {
+    "id": "M05",
+    "question": "My mind keeps wandering off when I try to focus on my breath.",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 13: Mindfulness (Sati)",
+        "chunk_index": 8
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "M06",
+    "question": "What does mindfulness actually mean?",
+    "style": "book",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 13: Mindfulness (Sati)",
+        "chunk_index": 2
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Mirror-thought, nonjudgmental observation."
+  },
+  {
+    "id": "M07",
+    "question": "Why should I even bother meditating? I'm really busy.",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 1: Meditation: Why Bother?",
+        "chunk_index": 0
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "M08",
+    "question": "Does meditation really help with stress and worry in everyday life?",
+    "style": "plain",
+    "domain": "mindfulness",
+    "expected_tool": "search_mindfulness_knowledge",
+    "book": "Mindfulness in Plain English",
+    "relevant_chunks": [
+      {
+        "book": "Mindfulness in Plain English",
+        "chapter": "Chapter 1: Meditation: Why Bother?",
+        "chunk_index": 15
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Competes with Permission to Feel (different domain, so only routing can confuse them)."
+  },
+  {
+    "id": "E01",
+    "question": "Most of the time I don't even know what I'm feeling.",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 1: Permission to Feel",
+        "chunk_index": 7
+      },
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 3: How to Become an Emotion Scientist",
+        "chunk_index": 12
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "E02",
+    "question": "I try to push my feelings down, but they keep exploding later.",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 1: Permission to Feel",
+        "chunk_index": 10
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Suppression."
+  },
+  {
+    "id": "E03",
+    "question": "Is there a simple way to check what mood I'm in?",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 4: R: Recognizing Emotion",
+        "chunk_index": 4
+      },
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 4: R: Recognizing Emotion",
+        "chunk_index": 5
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Mood Meter."
+  },
+  {
+    "id": "E04",
+    "question": "What are the core skills of emotional intelligence?",
+    "style": "book",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 3: How to Become an Emotion Scientist",
+        "chunk_index": 11
+      },
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 3: How to Become an Emotion Scientist",
+        "chunk_index": 12
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "RULER."
+  },
+  {
+    "id": "E05",
+    "question": "I overreact when my partner criticizes me. How can I respond like my best self instead?",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 8: R: Regulating Emotion",
+        "chunk_index": 11
+      },
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 8: R: Regulating Emotion",
+        "chunk_index": 12
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Meta-Moment."
+  },
+  {
+    "id": "E06",
+    "question": "I call myself an idiot every time I mess up.",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 8: R: Regulating Emotion",
+        "chunk_index": 20
+      },
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 8: R: Regulating Emotion",
+        "chunk_index": 21
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Positive self-talk."
+  },
+  {
+    "id": "E07",
+    "question": "How do I deal with stress and burnout at my job?",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 11: Emotions at Work",
+        "chunk_index": 15
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "E08",
+    "question": "How can I tell how my coworkers are feeling, and what the unwritten emotional rules at my workplace are?",
+    "style": "plain",
+    "domain": "emotions",
+    "expected_tool": "search_emotion_knowledge",
+    "book": "Permission to Feel",
+    "relevant_chunks": [
+      {
+        "book": "Permission to Feel",
+        "chapter": "Chapter 11: Emotions at Work",
+        "chunk_index": 2
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": ""
+  },
+  {
+    "id": "U01",
+    "question": "Can I really teach myself something as hard as a university degree on my own?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter I: Can You Get an MIT Education Without Going to MIT?",
+        "chunk_index": 1
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "MIT Challenge."
+  },
+  {
+    "id": "U02",
+    "question": "Before I start learning something new, how should I plan it?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter IV: Principle 1 Metalearning First Draw a Map",
+        "chunk_index": 4
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Metalearning map."
+  },
+  {
+    "id": "U03",
+    "question": "I keep researching study methods forever instead of actually studying.",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter IV: Principle 1 Metalearning First Draw a Map",
+        "chunk_index": 21
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Research as procrastination."
+  },
+  {
+    "id": "U04",
+    "question": "Is re-reading my notes a good way to prepare for an exam?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter VIII: Principle 5 Retrieval Test to Learn",
+        "chunk_index": 2
+      },
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter VIII: Principle 5 Retrieval Test to Learn",
+        "chunk_index": 3
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Testing effect."
+  },
+  {
+    "id": "U05",
+    "question": "How can I check whether I really understand a concept or just think I do?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter XI: Principle 8 Intuition Dig Deep Before Building Up",
+        "chunk_index": 20
+      },
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter XI: Principle 8 Intuition Dig Deep Before Building Up",
+        "chunk_index": 21
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Feynman technique."
+  },
+  {
+    "id": "U06",
+    "question": "I want to learn a new language. Should I start speaking right away?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter VI: Principle 3 Directness Go Straight Ahead",
+        "chunk_index": 6
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Directness."
+  },
+  {
+    "id": "U07",
+    "question": "I forget most of what I learn after a few weeks. How do I make it stick?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter X: Principle 7 Retention Don’t Fill a Leaky Bucket",
+        "chunk_index": 10
+      },
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter X: Principle 7 Retention Don’t Fill a Leaky Bucket",
+        "chunk_index": 20
+      }
+    ],
+    "relevant_chapters": [],
+    "notes": "Retention, leaky bucket, spacing."
+  },
+  {
+    "id": "U08",
+    "question": "How do I improve the weakest part of a skill I'm learning?",
+    "style": "plain",
+    "domain": "learning_strategies",
+    "expected_tool": "search_learning_knowledge",
+    "book": "Ultralearning",
+    "relevant_chunks": [
+      {
+        "book": "Ultralearning",
+        "chapter": "Chapter III: How to Become an Ultralearner",
+        "chunk_index": 11
+      }
+    ],
+    "relevant_chapters": [
+      "Chapter VII: Principle 4 Drill Attack Your Weakest Point"
+    ],
+    "notes": "Drill. Any Chapter VII chunk counts."
+  }
+]
