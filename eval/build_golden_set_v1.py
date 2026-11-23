@@ -32,6 +32,7 @@ SPEC = [
     ("P05", PRINCE, "book", "How much of our life is ruled by fortune, and how much by our own free will?",
      [("CHAPTER XXV:", [0, 4])], [], "Fortune as a flooding river."),
     ("P06", PRINCE, "plain", "I feel like luck decides everything in my life. Is there even any point in making plans?",
+     
      [("CHAPTER XXV:", [0, 4])], [], "Pair of P05. Competes with Law 29 (plan to the end)."),
     ("P07", PRINCE, "book", "How can a prince protect himself from the flatterers in his court?",
      [("CHAPTER XXIII:", [0, 1])], [], ""),

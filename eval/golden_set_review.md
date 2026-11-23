@@ -81,7 +81,7 @@ _Note: Pair of P07._
 
 ## P09 · The Prince · book
 
-**Q:** Should cruelties and injuries be inflicted all at once, while benefits are given little by little?
+**Q:** Should cruelties    and injuries be inflicted all at once, while benefits are given little by little?
 
 **Gold:** CHAPTER VIII: Concerning Those Who Have Obtained A Principality By Wickedness · chunk 5 (+2 more)
 
